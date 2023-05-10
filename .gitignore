@@ -42,5 +42,10 @@ testem.log
 Thumbs.db
 
 # Python
-
-env
+env/
+venv/
+/core/.env
+.venv
+__pycache__
+migrations
+media/
