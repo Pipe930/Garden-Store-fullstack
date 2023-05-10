@@ -37,7 +37,7 @@ BASE_APPS = [
 ]
 
 LOCAL_APPS = [
-
+    'apps.users.apps.UsersConfig',
 ]
 
 THIRD_APPS = [
@@ -174,7 +174,7 @@ REST_FRAMEWORK = {
     'DEFAULT_METADATA_CLASS': 'rest_framework.metadata.SimpleMetadata'
 }
 
-# AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = 'users.User'
 
 # LOGIN_REDIRECT_URL = '/'
 
