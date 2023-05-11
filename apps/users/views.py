@@ -1,10 +1,16 @@
 from rest_framework.response import Response
 from rest_framework import status, generics
 from django.http import Http404
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from django.contrib.auth import authenticate, login, logout
 from .models import User
 from .serializers import UserSerializer
+from django.contrib.sessions.models import Session
+from datetime import datetime
+from rest_framework.parsers import JSONParser
 
 # View that lists registered users
 class UserListView(generics.ListAPIView):
@@ -17,10 +23,10 @@ class UserListView(generics.ListAPIView):
     #Petition GET
     def get(self, request):
 
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
+        queryset = self.get_queryset() # get queryset
+        serializer = self.get_serializer(queryset, many=True) # serialize the data
 
-        if len(serializer.data):
+        if len(serializer.data): #
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response({'message': 'Usuarios Not Found'}, status=status.HTTP_204_NO_CONTENT)
@@ -41,8 +47,154 @@ class DetailUserView(generics.RetrieveAPIView):
 
         return user
 
+
     def get(self, request, id:int, format=None):
+
         user = self.get_object(id)
         serializer = self.get_serializer(user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+# View that the user registers in the system
+class RegisterUserView(generics.CreateAPIView):
+
+    serializer_class = UserSerializer
+    parser_classes = [JSONParser]
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+
+        # Serializer data
+        serializer = self.get_serializer(data=request.data)
+
+                # Is the data valid?
+        if serializer.is_valid():
+
+            serializer.save() # Save the data
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED) # Response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # Response
+
+# View that authenticates the user
+class LoginView(ObtainAuthToken):
+
+    permission_classes = [AllowAny]
+    parser_classes = [JSONParser]
+
+    def post(self, request):
+
+        # The request is serialized
+        serializer = self.serializer_class(
+            data=request.data,
+        )
+
+        if serializer.is_valid():
+
+            user_found = authenticate(
+                username = request.data["username"],
+                password = request.data["password"]
+            )
+
+            if user_found is not None: # user found?
+
+                serializer.is_valid(raise_exception=True)
+                user = serializer.validated_data["user"] # User is obtained
+
+                if user.is_active: # Is the user active?
+
+                    token, created = Token.objects.get_or_create(user=user) # A token is created for the user
+
+                    if created: # If a token exists
+
+                        # newCart = Cart.objects.get_or_create(idUser=user) # A cart is created for the user
+                        login(request=request, user=user) # The user is authenticated
+
+                        # try:
+                        #     # It checks if the user has a cart created
+                        #     cart = Cart.objects.get(idUser = user.id)
+                        # except Cart.DoesNotExist:
+                        #     return Response({"message": "The cart doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+                        userJson = {
+                            'token': token.key,
+                            'username': user.username,
+                            'user_id': user.id,
+                            'activate': user.is_active,
+                            'staff': user.is_staff,
+                            # 'idCart': cart.id
+                        }
+
+                        return Response(userJson, status=status.HTTP_200_OK) # Response
+
+                    # If there is not token
+                    token.delete() # Remove Token
+                    token = Token.objects.create(user=user) # A new token is created
+
+                    # try:
+                    #     cart = Cart.objects.get(idUser = user.id)
+                    # except Cart.DoesNotExist:
+                    #     pass
+
+                    # User information
+                    userJson = {
+                        'token': token.key,
+                        'username': user.username,
+                        'user_id': user.id,
+                        'activate': user.is_active,
+                        'staff': user.is_staff,
+                        # 'idCart': cart.id
+                    }
+                    return Response(userJson, status=status.HTTP_200_OK) # Response
+
+                return Response({'message': 'The user is not active'}, status= status.HTTP_401_UNAUTHORIZED) # Response
+
+            return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED) # Response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# View to logout the user
+class LogoutView(generics.RetrieveAPIView):
+
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get(self, request):
+        try:
+            # The token is obtained in the parameters of the url
+            tokenUrl = request.GET.get("token") # The token is obtained from the url parameter "token"
+            token = Token.objects.filter(key=tokenUrl).first()
+
+            if token: # Is there a token?
+                user = token.user # Obtain user
+                all_sesion = Session.objects.filter(expire_date__gte = datetime.now()) # You get all sessions
+
+                if all_sesion.exists(): # Is there an active session?
+
+                    for session in all_sesion:
+                        session_data = session.get_decoded() # Decode the session
+
+                        if user.id == int(session_data.get('_auth_user_id')): # Is there an active session with this user?
+                            session.delete() # delete session
+
+                token.delete()
+                logout(request=request)
+
+                                # Messages
+                session_message = 'User session terminated'
+                token_message = 'Removed Token'
+
+                # Message in json format
+                message = {
+                    'sesion_message': session_message,
+                    'token_message': token_message
+                }
+
+                return Response(message, status=status.HTTP_200_OK) # Response
+
+            return Response({'error': 'No user found with those credentials'},
+                            status=status.HTTP_400_BAD_REQUEST) # Response
+        except:
+            return Response({"errors": "The token was not found in the request"}, status=status.HTTP_409_CONFLICT) # Response
+
+
