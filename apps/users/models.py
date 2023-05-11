@@ -72,8 +72,8 @@ class Subscription(models.Model):
     class Meta:
 
         db_table = "subscriptions"
-        verbose_name = 'subscription'
-        verbose_name_plural = 'subscriptions'
+        verbose_name = 'subscripcion'
+        verbose_name_plural = 'subscripciones'
 
     def __str__(self) -> str:
         return self.username
