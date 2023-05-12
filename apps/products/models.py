@@ -59,7 +59,7 @@ class Product(models.Model):
     condition = models.BooleanField(default=True)
     create = models.DateTimeField(auto_now_add=True)
     id_category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    idOffer = models.ForeignKey(Offer, on_delete=models.SET_NULL, blank=True, null=True)
+    id_offer = models.ForeignKey(Offer, on_delete=models.SET_NULL, blank=True, null=True)
 
     class Meta:
 
