@@ -51,8 +51,8 @@ def nameImage(request, name_image):
 class Product(models.Model):
 
     name_product = models.CharField(max_length=100, unique=True)
-    price = models.PositiveIntegerField(default=0)
-    stock = models.PositiveSmallIntegerField(default=0)
+    price = models.PositiveIntegerField()
+    stock = models.PositiveSmallIntegerField()
     image = models.ImageField(upload_to=nameImage)
     description = models.TextField(blank=True, null=True, default="(Without description)")
     slug = models.SlugField(unique=True)
@@ -76,7 +76,7 @@ def set_slug(sender, instance, *args, **kwargs):
         return
 
     id = str(uuid.uuid4())
-    instance.slug= slugify('{}-{}'.format(
+    instance.slug = slugify('{}-{}'.format(
         instance.name_product, id[:8]
     ))
 

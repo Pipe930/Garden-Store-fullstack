@@ -1,12 +1,10 @@
 from rest_framework.response import Response
 from rest_framework import generics, status, filters
 from django.http import Http404
-from .models import Category, Product, Offer
-from .serializer import CategorySerializer, ProductSerializer, OfferSerializer
+from .models import Category, Product
+from .serializer import CategorySerializer, ProductSerializer
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.parsers import JSONParser, FileUploadParser, MultiPartParser
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.permissions import AllowAny
 
 # View that lists all categories
 class ListCategoriesView(generics.ListAPIView):
@@ -21,36 +19,14 @@ class ListCategoriesView(generics.ListAPIView):
         if len(queryset):
             serializer = self.get_serializer(queryset, many=True) # The data is serialized
             return Response({"categories": serializer.data}, status=status.HTTP_200_OK)
-        else:
-            return Response({'message': 'Not Data Found'}, status=status.HTTP_204_NO_CONTENT)
 
-# View to create a new category
-class CreateCategoryView(generics.CreateAPIView):
-
-    serializer_class = CategorySerializer
-    parser_classes = [JSONParser]
-    permission_classes = [IsAdminUser, IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
-
-    # Petition POST
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data = request.data) # The data is serialized
-
-        if serializer.is_valid(): # The data is validated
-            serializer.save() # The data is save
-            return Response(
-                {
-                    "data": serializer.data,
-                    "message": "Created category successfully"
-                 }, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "We don't have registered categories"}, status=status.HTTP_204_NO_CONTENT)
 
 # View to obtain a category
 class CategoryDetailView(generics.RetrieveAPIView):
 
     serializer_class = CategorySerializer
-    parser_classes = [JSONParser]
+    permission_classes = [AllowAny]
 
     # Fuction to obtain a object category
     def get_object(self, id:int):
@@ -69,53 +45,83 @@ class CategoryDetailView(generics.RetrieveAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-# View to update a category
-class UpdateCategoryView(generics.UpdateAPIView):
+# View that list all products
+class ListProductsView(generics.ListAPIView):
 
-    permission_classes = [IsAdminUser, IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
-    parser_classes = [JSONParser]
-    serializer_class = CategorySerializer
 
-    def get_object(self, id:int):
+    queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by('name_product')
+    serializer_class = ProductSerializer
+    pagination_class = PageNumberPagination
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+
+        queryset = self.get_queryset() # get queryset
+        page = self.paginate_queryset(queryset) # paginate queryset
+        serializer = self.get_serializer(page, many=True) # The data is serialized
+
+        if len(serializer.data): # Is the list empty?
+            return self.get_paginated_response(serializer.data)
+
+        return Response({"message": "We don't have registered products"}, status=status.HTTP_400_BAD_REQUEST)
+
+# View for obtain is a product
+class ProductView(generics.RetrieveAPIView):
+
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+
+    def get_object(self, slug:str):
         try:
-            category = Category.objects.get(id=id)
-        except Category.DoesNotExist:
+            product = Product.objects.get(slug=slug) # get object product
+        except Product.DoesNotExist: # If it doesn't exist
             raise Http404
 
-        return category
+        return product
 
-    def put(self, request, id:int, format=None):
+    def get(self, request, slug:str, format=None):
+        product = self.get_object(slug) # get object
+        serializer = self.get_serializer(product) # The data is serialized
 
-        category = self.get_object(id)
-        serializer = self.get_serializer(category, data=request.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        if serializer.is_valid():
+class ProductSearchView(generics.ListAPIView):
 
-            serializer.save()
-            return Response(                {
-                    "data": serializer.data,
-                    "message": "Updated category successfully"
-                 }, status=status.HTTP_200_OK)
+    queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by('name_product')
+    serializer_class = ProductSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name_product']
+    permission_classes = [AllowAny]
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class ListProductOfferView(generics.ListAPIView):
 
-# View to delete a category
-class DeleteCategoryView(generics.DestroyAPIView):
+    queryset = Product.objects.filter(condition=True, id_offer__isnull=False).order_by('name_product')
+    serializer_class = ProductSerializer
+    pagination_class = PageNumberPagination
+    permission_classes = [AllowAny]
 
-    permission_classes = [IsAdminUser, IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    def get(self, request, format=None):
 
-    def get_object(self, id:int):
-        try:
-            category = Category.objects.get(id=id)
-        except Category.DoesNotExist:
-            raise Http404
+        product = self.get_queryset()
+        page = self.paginate_queryset(product)
+        serializer = self.get_serializer(page, many=True)
 
-        return category
+        if len(serializer.data):
+            return self.get_paginated_response(serializer.data)
 
-    def delete(self, request, id:int, format=None):
+        return Response({'detail': 'Products Offers Not Found'}, status=status.HTTP_400_BAD_REQUEST)
 
-        category = self.get_object(id)
-        category.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+class ProductFilterView(generics.ListAPIView):
+
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, id:int):
+
+        query = Product.objects.filter(
+            condition = True, id_offer__isnull = True, id_category = id
+            ).order_by('name_product')
+
+        serializer = self.get_serializer(query, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
