@@ -279,3 +279,82 @@ class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
         subscription.delete() # Delete a Object subscription
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+# View for mailing
+class SendEmailView(generics.CreateAPIView):
+
+    serializer_class = MessageSerializer
+    parser_classes = [JSONParser]
+
+    # Petition POST
+    def post(self, request, format=None):
+
+        serializer = self.get_serializer(data=request.data) # The data is serialized
+
+        if serializer.is_valid(): # The information is validated
+
+            print(serializer.data)
+            Util.send_email(data=serializer.data) # The method of the util send email class is used
+
+            return Response({"data": serializer.data, "message": "Email send successfully"}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# View that changes the user's password
+class ChangePasswordView(generics.UpdateAPIView):
+    """
+    One end point to change the password
+    """
+    serializer_class = ChangePasswordSerializer
+    model = User
+    parser_classes = [JSONParser]
+
+    # Get the user object
+    def get_object(self, queryset=None):
+
+        object = self.request.user
+        return object
+
+    # Petition PUT
+    def update(self, request, *args, **kwargs):
+
+        self.object = self.get_object() # Is obtained a user
+        serializer = self.get_serializer(data=request.data) # The data is serialized
+
+        if serializer.is_valid(): # The date is validated
+
+            # Check if the password is correct
+            if not self.object.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+
+            # The password that the user will get is encrypted
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save() # The new password is saved
+
+            response = {
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Password updated successfully',
+                'data': []
+            }
+
+            return Response(response)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+
+    # Email Message
+    email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'), reset_password_token.key)
+
+    send_mail(
+        # title:
+        "Password Reset for {title}".format(title="Garden Store"),
+        # message:
+        email_plaintext_message,
+        # from:
+        "noreply@somehost.local",
+        # to:
+        [reset_password_token.user.email]
+    )
