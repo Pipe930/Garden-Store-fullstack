@@ -24,6 +24,20 @@ Después de ejecutar el comando, se creará una carpeta con el entorno virtual. 
 
 Posteriormente se instalarán las dependencias para ejecutar el proyecto.
 
+# Variables de Entorno 📌
+
+Para poder crear las variables de entorno se necesita crear una archivo .env en la carpeta core/, adentro de este archivo se deben poner las siguientes variables de entorno:
+
+```bash
+NAME_DATABASE=<db-name>
+USER_DATABASE=<username>
+PASSWORD_DATABASE=<password>
+HOST_DATABASE=localhost
+PORT_DATABASE=3306
+SECRET_KEY=<generate-secret-key>
+DEBUG=<True|False>
+```
+
 # Migraciones 📝
 Para migrar los modelos a la base de datos, primero debe configurar el archivo settings.py con los detalles de conexión de la base de datos. Una vez que hayas hecho la configuración, ejecuta el comando:
 
