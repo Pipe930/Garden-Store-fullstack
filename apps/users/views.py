@@ -6,10 +6,16 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from django.contrib.auth import authenticate, login, logout
-from .models import User
-from .serializers import UserSerializer
+from .models import User, Subscription
+from .serializers import UserSerializer, SubscriptionSerializer, MessageSerializer, ChangePasswordSerializer
 from django.contrib.sessions.models import Session
 from datetime import datetime
+from .util import Util
+# from apps.cart.models import Cart
+from django.dispatch import receiver
+from django.urls import reverse
+from django_rest_passwordreset.signals import reset_password_token_created
+from django.core.mail import send_mail
 from rest_framework.parsers import JSONParser
 
 # View that lists registered users
@@ -20,14 +26,14 @@ class UserListView(generics.ListAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
 
-    #Petition GET
+    # Petition GET
     def get(self, request):
 
         queryset = self.get_queryset() # get queryset
-        serializer = self.get_serializer(queryset, many=True) # serialize the data
+        serializer = self.get_serializer(queryset, many=True) # The data is serialized
 
-        if len(serializer.data): #
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        if len(serializer.data): # The list has data?
+            return Response({"users": serializer.data}, status=status.HTTP_200_OK)
 
         return Response({'message': 'Usuarios Not Found'}, status=status.HTTP_204_NO_CONTENT)
 
@@ -41,17 +47,17 @@ class DetailUserView(generics.RetrieveAPIView):
     def get_object(self, id:int):
 
         try:
-            user = User.objects.get(id=id)
+            user = User.objects.get(id=id) # Get object user
         except User.DoesNotExist:
             raise Http404
 
         return user
 
-
+    # Petition GET
     def get(self, request, id:int, format=None):
 
         user = self.get_object(id)
-        serializer = self.get_serializer(user)
+        serializer = self.get_serializer(user) # The data is serialized
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -72,9 +78,12 @@ class RegisterUserView(generics.CreateAPIView):
 
             serializer.save() # Save the data
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED) # Response
+            return Response({
+                "data": serializer.data,
+                "message": "Registered Successfully"
+                }, status=status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # Response
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # View that authenticates the user
 class LoginView(ObtainAuthToken):
@@ -86,7 +95,7 @@ class LoginView(ObtainAuthToken):
 
         # The request is serialized
         serializer = self.serializer_class(
-            data=request.data,
+            data=request.data
         )
 
         if serializer.is_valid():
@@ -117,11 +126,11 @@ class LoginView(ObtainAuthToken):
                         #     return Response({"message": "The cart doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
 
                         userJson = {
-                            'token': token.key,
-                            'username': user.username,
-                            'user_id': user.id,
-                            'activate': user.is_active,
-                            'staff': user.is_staff,
+                            "token": token.key,
+                            "username": user.username,
+                            "user_id": user.id,
+                            "activate": user.is_active,
+                            "staff": user.is_staff,
                             # 'idCart': cart.id
                         }
 
@@ -138,18 +147,18 @@ class LoginView(ObtainAuthToken):
 
                     # User information
                     userJson = {
-                        'token': token.key,
-                        'username': user.username,
-                        'user_id': user.id,
-                        'activate': user.is_active,
-                        'staff': user.is_staff,
+                        "token": token.key,
+                        "username": user.username,
+                        "user_id": user.id,
+                        "activate": user.is_active,
+                        "staff": user.is_staff,
                         # 'idCart': cart.id
                     }
                     return Response(userJson, status=status.HTTP_200_OK) # Response
 
-                return Response({'message': 'The user is not active'}, status= status.HTTP_401_UNAUTHORIZED) # Response
+                return Response({'message': 'The user is not active'}, status= status.HTTP_401_UNAUTHORIZED)
 
-            return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED) # Response
+            return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -180,7 +189,7 @@ class LogoutView(generics.RetrieveAPIView):
                 token.delete()
                 logout(request=request)
 
-                                # Messages
+                # Messages
                 session_message = 'User session terminated'
                 token_message = 'Removed Token'
 
@@ -190,11 +199,83 @@ class LogoutView(generics.RetrieveAPIView):
                     'token_message': token_message
                 }
 
-                return Response(message, status=status.HTTP_200_OK) # Response
+                return Response(message, status=status.HTTP_200_OK)
 
             return Response({'error': 'No user found with those credentials'},
-                            status=status.HTTP_400_BAD_REQUEST) # Response
+                            status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response({"errors": "The token was not found in the request"}, status=status.HTTP_409_CONFLICT) # Response
+            return Response({"errors": "The token was not found in the request"}, status=status.HTTP_409_CONFLICT)
+
+# View that creates and lists subscriptions
+class ListSubscriptionView(generics.ListAPIView):
+
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    authentication_classes = [TokenAuthentication]
+    queryset = Subscription.objects.all()
+
+    # Petition GET
+    def get(self, request):
+
+        queryset = self.get_queryset() # get queryset
+        serializer = self.get_serializer(queryset, many=True) # The data is serialized
+
+        return Response({"subscriptions": serializer.data}, status=status.HTTP_200_OK)
+
+class CreateSubscriptionView(generics.CreateAPIView):
+
+    parser_classes = [JSONParser]
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    authentication_classes = [TokenAuthentication]
+    serializer_class = SubscriptionSerializer
+
+    # Petition POST
+    def post(self, request, format=None):
+
+        serializer = self.get_serializer(data=request.data) # The data is serialized
+
+        if serializer.is_valid(): # Validation of received data
+
+            serializer.save() # The data is save
+            return Response(
+                {
+                    "data": serializer.data,
+                    "message": "Created Subscription Successfully"
+                },
+                status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# View that gets a subscription by id
+class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
+
+    serializer_class = SubscriptionSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    # Get the object by id
+    def get_object(self, id:int):
+        try:
+            subscription = Subscription.objects.get(id=id) # Queryset
+        except Subscription.DoesNotExist:
+            # If it does not exist, it returns a 404 message
+            raise Http404
+
+        return subscription
+
+    # Petition GET
+    def get(self, request, id:int, format=None):
+
+        subcription = self.get_object(id) # Object
+        serializer = self.get_serializer(subcription) # Serializer data
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # Petition DELETE
+    def delete(self, request, id:int, format=None):
+
+        subscription = self.get_object(id) # Object
+        subscription.delete() # Delete a Object subscription
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
