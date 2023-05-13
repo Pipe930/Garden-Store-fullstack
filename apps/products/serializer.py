@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Category, Product, Offer
+from .discount import discount
 
 class SerializerOffer(serializers.ModelSerializer):
     class Meta:
@@ -13,21 +14,15 @@ class ProductSerializer(serializers.ModelSerializer):
 
     id_category = serializers.StringRelatedField()
     id_offer = SerializerOffer(many=False)
-    price = serializers.SerializerMethodField(method_name='discount')
+    price = serializers.SerializerMethodField(method_name='discount_price')
 
-    def discount(self, product: Product):
+    def discount_price(self, product: Product):
 
         if product.id_offer is not None:
 
-            discount = product.id_offer.discount
-            priceProduct = product.price
+            final_price = discount(product.price, product.id_offer.discount)
 
-            discountDecimal = discount / 100
-            priceDiscount = priceProduct * discountDecimal
-
-            result = priceProduct - priceDiscount
-
-            return result
+            return final_price
 
         return product.price
 

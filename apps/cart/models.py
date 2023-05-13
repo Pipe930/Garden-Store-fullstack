@@ -5,7 +5,7 @@ from apps.products.models import Product
 class Cart(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     total = models.PositiveIntegerField(default=0)
-    idUser = models.ForeignKey(User, on_delete=models.CASCADE)
+    id_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
 
@@ -17,7 +17,7 @@ class Cart(models.Model):
         return str(self.idUser.username)
 
 class CartItems(models.Model):
-    idCart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    id_cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='products')
     quantity = models.PositiveSmallIntegerField()
     price = models.PositiveIntegerField()
