@@ -36,9 +36,10 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Cart
-        fields = ('id', 'items', 'total', 'idUser')
+        fields = ('id', 'items', 'total', 'id_user')
 
     def main_total(self, cart: Cart):
+
         items = cart.items.all()
         total = calculate_total_price(items=items)
         return total
