@@ -35,7 +35,7 @@ class SimpleProductSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Product
-        fields = ["id", "name_product", "price", "stock"]
+        fields = ["id", "name_product", "price"]
 
 # Cart items serializer
 class CartItemsSerializer(serializers.ModelSerializer):
@@ -46,7 +46,7 @@ class CartItemsSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = CartItems
-        fields = ("id", "id_cart", "product", "quantity", "price")
+        fields = ("product", "quantity", "price")
 
     # Method to calculate the total price
     def total(self, cartItem: CartItems):
@@ -99,6 +99,7 @@ class AddCartItemSerializer(serializers.ModelSerializer):
         try:
 
             cartitem = CartItems.objects.get(product=product, id_cart=id_cart)
+
             if cartitem.product.stock > cartitem.quantity:
 
                 cartitem.quantity += quantity
@@ -114,16 +115,18 @@ class AddCartItemSerializer(serializers.ModelSerializer):
 
             product2 = Product.objects.get(id=int(product.id))
 
-            newPrice = product2.price * quantity
+            if product2.stock > quantity:
 
-            self.instance = CartItems.objects.create(
-                product=product,
-                id_cart=id_cart,
-                quantity=quantity,
-                price=newPrice
-                )
+                newPrice = product2.price * quantity
 
-            cart_total(id_cart)
+                self.instance = CartItems.objects.create(
+                    product=product,
+                    id_cart=id_cart,
+                    quantity=quantity,
+                    price=newPrice
+                    )
+
+                cart_total(id_cart)
 
         return self.instance
 

@@ -1,6 +1,7 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
 from .models import Cart, CartItems
+from apps.products.models import Product
 from django.http import Http404
 from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, VoucherSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -53,12 +54,33 @@ class AddCartItemView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
+    def get_object(self, id:int):
+
+        try:
+            product = Product.objects.get(id=id)
+        except Product.DoesNotExist:
+            raise Http404
+
+        return product
+
     def create(self, request):
+
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
+
+            data = serializer.data
+
+            product = self.get_object(data["product"])
+
+            quantity = data["quantity"]
+
+            if product.stock < quantity:
+
+                return Response({"message": "La cantidad supera el stock disponible"}, status=status.HTTP_400_BAD_REQUEST)
+
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"data": serializer.data, "message": "Agregado al carrito con exito"}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

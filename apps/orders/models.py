@@ -54,10 +54,10 @@ CHOICES_WITHDRAWAL = [
 ]
 
 CHOICES_CONDITION = [
-    ("en preparacion", "en preparacion"),
-    ("en reparto", "en reparto"),
-    ("en camino", "en camino"),
-    ("entregado", "entregado")
+    ("En Preparacion", "En Preparacion"),
+    ("En Reparto", "En Reparto"),
+    ("En Camino", "En Camino"),
+    ("Entregado", "Entregado")
 ]
 
 # Model Order
@@ -65,7 +65,7 @@ class Order(models.Model):
 
     code = models.UUIDField(default=uuid4, unique=True)
     created = models.DateTimeField(auto_now_add=True)
-    condition = models.CharField(max_length=20, choices=CHOICES_CONDITION)
+    condition = models.CharField(max_length=20, choices=CHOICES_CONDITION, default="En Preparacion")
     withdrawal = models.CharField(max_length=20, choices=CHOICES_WITHDRAWAL)
     direction = models.CharField(max_length=100)
     num_department = models.PositiveSmallIntegerField(blank=True, null=True)
@@ -80,4 +80,4 @@ class Order(models.Model):
         verbose_name_plural = 'orders'
 
     def __str__(self) -> str:
-        return self.id_user
+        return self.id_user.username
