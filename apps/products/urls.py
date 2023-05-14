@@ -16,3 +16,4 @@ urlsProduct = [
 ]
 
 urlsCategory = format_suffix_patterns(urlsCategory)
+urlsProduct = format_suffix_patterns(urlsProduct)
