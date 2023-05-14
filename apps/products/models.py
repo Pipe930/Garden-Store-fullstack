@@ -48,8 +48,10 @@ def nameImage(request, name_image):
     name_image = '%s%s' % (current_date, old_name)
     return join('images/', name_image)
 
+# Product Model
 class Product(models.Model):
 
+    # Atributtes
     name_product = models.CharField(max_length=100, unique=True)
     price = models.PositiveIntegerField()
     stock = models.PositiveSmallIntegerField()
@@ -71,6 +73,7 @@ class Product(models.Model):
     def __str__(self) -> str:
         return self.name_product
 
+# Function to define the slug of the product
 def set_slug(sender, instance, *args, **kwargs):
     if instance.slug:
         return

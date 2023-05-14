@@ -40,6 +40,7 @@ LOCAL_APPS = [
     'apps.users.apps.UsersConfig',
     'apps.products.apps.ProductsConfig',
     'apps.cart.apps.CartConfig',
+    'apps.orders.apps.OrderConfig',
 ]
 
 THIRD_APPS = [

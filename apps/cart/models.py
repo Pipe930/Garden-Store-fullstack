@@ -37,7 +37,7 @@ class Voucher(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     total_price = models.PositiveIntegerField()
     state = models.BooleanField(default=False)
-    description_state = models.CharField(max_length=20, default="Preparacion")
+    products = models.JSONField()
     id_user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
 
