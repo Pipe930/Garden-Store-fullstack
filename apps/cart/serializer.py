@@ -3,12 +3,16 @@ from .models import Cart, CartItems, Voucher
 from apps.products.models import Product
 from django.http import Http404
 from apps.products.discount import discount
-from .cart_total import calculate_total_price, cart_total
+from .cart_total import CalculatePriceTotal
 from .discount_stock import DiscountStock
+
+# Creation of the total price calculation object
+newObjectCalculate = CalculatePriceTotal()
 
 class VoucherSerializer(serializers.ModelSerializer):
 
     class Meta:
+
         model = Voucher
         fields = "__all__"
 
@@ -16,7 +20,7 @@ class VoucherSerializer(serializers.ModelSerializer):
 
         id_cart = validated_data["id_cart"]
 
-        discount_stock = DiscountStock()
+        discount_stock = DiscountStock() # We instantiate the object DiscountStock
 
         discount_stock.discount_stock_product(id_cart)
 
@@ -24,38 +28,47 @@ class VoucherSerializer(serializers.ModelSerializer):
 
         discount_stock.clean_cart(id_cart)
 
-        cart_total(id_cart)
+        newObjectCalculate.cart_total(id_cart)
 
         return voucher
 
+# Simple product serializer
 class SimpleProductSerializer(serializers.ModelSerializer):
 
     class Meta:
+
         model = Product
         fields = ["id", "name_product", "price", "stock"]
 
+# Cart items serializer
 class CartItemsSerializer(serializers.ModelSerializer):
 
     product = SimpleProductSerializer(many=False)
     price = serializers.SerializerMethodField(method_name="total")
 
     class Meta:
+
         model = CartItems
         fields = ("id", "id_cart", "product", "quantity", "price")
 
+    # Method to calculate the total price
     def total(self, cartItem: CartItems):
+
         if cartItem.product.id_offer is not None:
 
-            price = discount(cartItem.product.price,  cartItem.product.id_offer.discount)
+            price = discount(cartItem.product.price, cartItem.product.id_offer.discount)
 
         price = cartItem.product.price
 
         result = cartItem.quantity * price
         return result
 
+# Cart serializer
 class CartSerializer(serializers.ModelSerializer):
+
     items = CartItemsSerializer(many=True, read_only=True)
     total = serializers.SerializerMethodField(method_name="main_total")
+
     class Meta:
 
         model = Cart
@@ -64,16 +77,19 @@ class CartSerializer(serializers.ModelSerializer):
     def main_total(self, cart: Cart):
 
         items = cart.items.all()
-        total = calculate_total_price(items=items)
+        total = newObjectCalculate.calculate_total_price(items)
         return total
 
     def create(self, validated_data):
+
         cart = Cart.objects.create(**validated_data)
         return cart
 
+# Add Cart serializer
 class AddCartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
+
         model = CartItems
         fields = ["product", "quantity", "id_cart"]
 
@@ -93,7 +109,7 @@ class AddCartItemSerializer(serializers.ModelSerializer):
 
                 cartitem.save()
 
-                cart_total(id_cart)
+                newObjectCalculate.cart_total(id_cart)
 
                 self.instance = cartitem
 
@@ -110,10 +126,11 @@ class AddCartItemSerializer(serializers.ModelSerializer):
                 price=newPrice
                 )
 
-            cart_total(id_cart)
+            newObjectCalculate.cart_total(id_cart)
 
         return self.instance
 
+# Substract Cart serializer
 class SubtractCartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -140,25 +157,6 @@ class SubtractCartItemSerializer(serializers.ModelSerializer):
         cartitem.price = cartitem.quantity * cartitem.product.price
         cartitem.save()
 
-        cart_total(cartitem.id_cart)
-
-        return self.instance
-
-class ClearCartSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = CartItems
-        fields = ("id_cart",)
-
-    def save(self):
-        try:
-            id_cart = self.validated_data["id_cart"]
-        except KeyError:
-            raise Http404
-
-        items = CartItems.objects.filter(id_cart=id_cart)
-
-        for item in items:
-            item.delete()
+        newObjectCalculate.cart_total(cartitem.id_cart)
 
         return self.instance

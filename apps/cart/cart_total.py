@@ -1,34 +1,39 @@
 from .models import Cart
 
 
-def cart_total(id_cart):
+# Class calculate price total
+class CalculatePriceTotal():
 
-    cart = Cart.objects.get(id=int(id_cart.id))
+    # Method calculate cart total
+    def cart_total(id_cart):
 
-    items = cart.items.all()
-    total = sum([item.quantity * item.product.price for item in items])
+        cart = Cart.objects.get(id=int(id_cart.id))
 
-    cart.total = total
-    cart.save()
+        items = cart.items.all()
+        total = sum([item.quantity * item.product.price for item in items])
 
-def calculate_total_price(items) -> int:
+        cart.total = total
+        cart.save()
 
-    total_price = 0
+    # Method calculate total price
+    def calculate_total_price(items) -> int:
 
-    for item in items:
+        total_price = 0
 
-        if item.product.id_offer is not None:
+        for item in items:
 
-            discount = item.product.id_offer.discount
-            price_product = item.product.price
+            if item.product.id_offer is not None:
 
-            discount_decimal = discount / 100
-            price_discount = price_product * discount_decimal
+                discount = item.product.id_offer.discount
+                price_product = item.product.price
 
-            price = price_product - price_discount
-        else:
+                discount_decimal = discount / 100
+                price_discount = price_product * discount_decimal
+
+                price = price_product - price_discount
+
             price = item.product.price
 
-        total_price += item.quantity * price
+            total_price += item.quantity * price
 
-    return total_price
+        return total_price

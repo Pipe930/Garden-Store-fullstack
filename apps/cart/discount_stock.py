@@ -1,8 +1,10 @@
 from apps.products.models import Product
 from .models import CartItems
 
+# Class Discount Stock
 class DiscountStock():
 
+    # Method Obtain a Object Product
     def get_object(self, id_product:int):
 
         try:
@@ -12,8 +14,10 @@ class DiscountStock():
 
         return product
 
+    # Method of discounting stock of a product
     def discount_stock_product(self, id_cart:int):
 
+        # Query to get the items from the user's cart
         cartitems_user = CartItems.objects.filter(id_cart=id_cart)
 
         for items in cartitems_user:
@@ -29,6 +33,7 @@ class DiscountStock():
 
             product.save()
 
+    # Method Clean Cart
     def clean_cart(self, id_cart:int):
 
         cartitems_user = CartItems.objects.filter(id_cart=id_cart)

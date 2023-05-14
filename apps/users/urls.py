@@ -2,6 +2,8 @@ from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 
+# Urls views user
+
 urlsUser = [
     path("register", views.RegisterUserView.as_view()),
     path("auth/login", views.LoginView.as_view()),

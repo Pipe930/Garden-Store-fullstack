@@ -73,7 +73,7 @@ class ProductView(generics.RetrieveAPIView):
 
     def get_object(self, slug:str):
         try:
-            product = Product.objects.get(slug=slug) # get object product
+            product = Product.objects.get(slug=slug) # Get object product
         except Product.DoesNotExist: # If it doesn"t exist
             raise Http404
 
@@ -85,12 +85,13 @@ class ProductView(generics.RetrieveAPIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# View for search a product
 class ProductSearchView(generics.ListAPIView):
 
     queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by("name_product")
     serializer_class = ProductSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ["name_product"]
+    filter_backends = [filters.SearchFilter] # Filter Backend Search Product
+    search_fields = ["name_product"] # Field to search for a product
     permission_classes = [AllowAny]
 
 class ListProductOfferView(generics.ListAPIView):
@@ -102,11 +103,12 @@ class ListProductOfferView(generics.ListAPIView):
 
     def get(self, request, format=None):
 
-        product = self.get_queryset()
-        page = self.paginate_queryset(product)
-        serializer = self.get_serializer(page, many=True)
+        product = self.get_queryset() # Get queryset
+        page = self.paginate_queryset(product) # Paginate queryset
+        serializer = self.get_serializer(page, many=True) # The data is serialized
 
-        if len(serializer.data):
+        if len(serializer.data): # Is the list empty?
+
             return self.get_paginated_response(serializer.data)
 
         return Response({"detail": "No se encontradon productos en oferta"}, status=status.HTTP_400_BAD_REQUEST)
@@ -118,10 +120,11 @@ class ProductFilterView(generics.ListAPIView):
 
     def get(self, request, id:int):
 
+        # Query filter by category id
         query = Product.objects.filter(
             condition = True, id_offer__isnull = True, id_category = id
             ).order_by("name_product")
 
-        serializer = self.get_serializer(query, many=True)
+        serializer = self.get_serializer(query, many=True) # The data is serialized
 
         return Response(serializer.data, status=status.HTTP_200_OK)

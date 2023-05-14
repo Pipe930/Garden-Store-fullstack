@@ -2,7 +2,7 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from .models import Cart, CartItems
 from django.http import Http404
-from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, ClearCartSerializer, VoucherSerializer
+from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, VoucherSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import JSONParser
@@ -83,7 +83,6 @@ class SubtractCartItemView(generics.CreateAPIView):
 
 class ClearCartItemsView(generics.DestroyAPIView):
 
-    serializer_class = ClearCartSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
