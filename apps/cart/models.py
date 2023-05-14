@@ -11,25 +11,25 @@ class Cart(models.Model):
 
     class Meta:
 
-        db_table = 'carts'
-        verbose_name = 'cart'
-        verbose_name_plural = 'carts'
+        db_table = "carts"
+        verbose_name = "cart"
+        verbose_name_plural = "carts"
 
     def __str__(self) -> str:
         return str(self.id_user.username)
 
 class CartItems(models.Model):
 
-    id_cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='products')
+    id_cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name="items")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="products")
     quantity = models.PositiveSmallIntegerField()
     price = models.PositiveIntegerField()
 
     class Meta:
 
-        db_table = 'cartsItems'
-        verbose_name = 'cartItems'
-        verbose_name_plural = 'cartsItems'
+        db_table = "cartsItems"
+        verbose_name = "cartItems"
+        verbose_name_plural = "cartsItems"
 
 class Voucher(models.Model):
 
@@ -46,6 +46,6 @@ class Voucher(models.Model):
 
     class Meta:
 
-        db_table = 'voucher'
-        verbose_name = 'vouchers'
-        verbose_name_plural = 'vouchers'
+        db_table = "voucher"
+        verbose_name = "vouchers"
+        verbose_name_plural = "vouchers"

@@ -82,7 +82,7 @@ class LoginView(ObtainAuthToken):
                             "user_id": user.id,
                             "activate": user.is_active,
                             "staff": user.is_staff,
-                            'idCart': cart.id
+                            "idCart": cart.id
                         }
 
                         return Response(userJson, status=status.HTTP_200_OK) # Response
@@ -98,12 +98,12 @@ class LoginView(ObtainAuthToken):
                         "user_id": user.id,
                         "activate": user.is_active,
                         "staff": user.is_staff,
-                        'idCart': cart.id
+                        "idCart": cart.id
                     }
 
                     return Response(userJson, status=status.HTTP_200_OK) # Response
 
-                return Response({'message': 'El usuario no esta activo'}, status= status.HTTP_401_UNAUTHORIZED)
+                return Response({"message": "El usuario no esta activo"}, status= status.HTTP_401_UNAUTHORIZED)
 
             return Response({"message": "Credenciales Invalidas"}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -130,25 +130,25 @@ class LogoutView(generics.RetrieveAPIView):
                     for session in all_sesion:
                         session_data = session.get_decoded() # Decode the session
 
-                        if user.id == int(session_data.get('_auth_user_id')): # Is there an active session with this user?
+                        if user.id == int(session_data.get("_auth_user_id")): # Is there an active session with this user?
                             session.delete() # delete session
 
                 token.delete()
                 logout(request=request)
 
                 # Messages
-                session_message = 'Session de usuario terminada'
-                token_message = 'Token Eliminado'
+                session_message = "Session de usuario terminada"
+                token_message = "Token Eliminado"
 
                 # Message in json format
                 message = {
-                    'sesion_message': session_message,
-                    'token_message': token_message
+                    "sesion_message": session_message,
+                    "token_message": token_message
                 }
 
                 return Response(message, status=status.HTTP_200_OK)
 
-            return Response({'error': 'Usuario no encontrado con esas credenciales'},
+            return Response({"error": "Usuario no encontrado con esas credenciales"},
                             status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response({"errors": "El token no se a encontrado en la cabecera"}, status=status.HTTP_409_CONFLICT)
@@ -247,7 +247,7 @@ class SendEmailView(generics.CreateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# View that changes the user's password
+# View that changes the user"s password
 class ChangePasswordView(generics.UpdateAPIView):
     """
     One end point to change the password
@@ -279,10 +279,10 @@ class ChangePasswordView(generics.UpdateAPIView):
             self.object.save() # The new password is saved
 
             response = {
-                'status': 'success',
-                'code': status.HTTP_200_OK,
-                'message': 'Contraseña actualizada con exito',
-                'data': []
+                "status": "success",
+                "code": status.HTTP_200_OK,
+                "message": "Contraseña actualizada con exito",
+                "data": []
             }
 
             return Response(response)
@@ -293,7 +293,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
 
     # Email Message
-    email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'), reset_password_token.key)
+    email_plaintext_message = "{}?token={}".format(reverse("password_reset:reset-password-request"), reset_password_token.key)
 
     send_mail(
         # title:

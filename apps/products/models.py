@@ -14,10 +14,10 @@ class Category(models.Model):
 
     class Meta:
 
-        db_table = 'categories'
-        verbose_name = 'category'
-        verbose_name_plural = 'categories'
-        ordering = ['name_category',]
+        db_table = "categories"
+        verbose_name = "category"
+        verbose_name_plural = "categories"
+        ordering = ["name_category",]
 
     def __str__(self) -> str:
         return self.name_category
@@ -33,10 +33,10 @@ class Offer(models.Model):
 
     class Meta:
 
-        db_table = 'offers'
-        verbose_name = 'offer'
-        verbose_name_plural = 'offers'
-        ordering = ['start_date',]
+        db_table = "offers"
+        verbose_name = "offer"
+        verbose_name_plural = "offers"
+        ordering = ["start_date",]
 
     def __str__(self) -> str:
         return self.name_offer
@@ -44,9 +44,9 @@ class Offer(models.Model):
 # Function to name images
 def nameImage(request, name_image):
     old_name = name_image
-    current_date = datetime.now().strftime('%Y%m%d%H:%M:%S')
-    name_image = '%s%s' % (current_date, old_name)
-    return join('images/', name_image)
+    current_date = datetime.now().strftime("%Y%m%d%H:%M:%S")
+    name_image = "%s%s" % (current_date, old_name)
+    return join("images/", name_image)
 
 # Product Model
 class Product(models.Model):
@@ -65,10 +65,10 @@ class Product(models.Model):
 
     class Meta:
 
-        db_table = 'products'
-        verbose_name = 'product'
-        verbose_name_plural = 'products'
-        ordering = ['name_product', 'create', 'price', 'stock']
+        db_table = "products"
+        verbose_name = "product"
+        verbose_name_plural = "products"
+        ordering = ["name_product", "create", "price", "stock"]
 
     def __str__(self) -> str:
         return self.name_product
@@ -79,7 +79,7 @@ def set_slug(sender, instance, *args, **kwargs):
         return
 
     id = str(uuid.uuid4())
-    instance.slug = slugify('{}-{}'.format(
+    instance.slug = slugify("{}-{}".format(
         instance.name_product, id[:8]
     ))
 

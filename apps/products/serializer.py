@@ -5,7 +5,7 @@ from .discount import discount
 class SerializerOffer(serializers.ModelSerializer):
     class Meta:
         model = Offer
-        fields = ['id', 'name_offer', 'discount']
+        fields = ["id", "name_offer", "discount"]
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -14,7 +14,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     id_category = serializers.StringRelatedField()
     id_offer = SerializerOffer(many=False)
-    price = serializers.SerializerMethodField(method_name='discount_price')
+    price = serializers.SerializerMethodField(method_name="discount_price")
 
     def discount_price(self, product: Product):
 
@@ -29,4 +29,4 @@ class ProductSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = '__all__'
+        fields = "__all__"

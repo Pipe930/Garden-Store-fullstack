@@ -10,7 +10,7 @@ class VoucherSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Voucher
-        fields = '__all__'
+        fields = "__all__"
 
     def create(self, validated_data):
 
@@ -32,16 +32,16 @@ class SimpleProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'name_product', 'price', 'stock']
+        fields = ["id", "name_product", "price", "stock"]
 
 class CartItemsSerializer(serializers.ModelSerializer):
 
     product = SimpleProductSerializer(many=False)
-    price = serializers.SerializerMethodField(method_name='total')
+    price = serializers.SerializerMethodField(method_name="total")
 
     class Meta:
         model = CartItems
-        fields = ('id', 'id_cart', 'product', 'quantity', 'price')
+        fields = ("id", "id_cart", "product", "quantity", "price")
 
     def total(self, cartItem: CartItems):
         if cartItem.product.id_offer is not None:
@@ -55,11 +55,11 @@ class CartItemsSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     items = CartItemsSerializer(many=True, read_only=True)
-    total = serializers.SerializerMethodField(method_name='main_total')
+    total = serializers.SerializerMethodField(method_name="main_total")
     class Meta:
 
         model = Cart
-        fields = ('id', 'items', 'total', 'id_user')
+        fields = ("id", "items", "total", "id_user")
 
     def main_total(self, cart: Cart):
 
@@ -122,7 +122,7 @@ class SubtractCartItemSerializer(serializers.ModelSerializer):
 
     def save(self, **kwargs):
         try:
-            product = self.validated_data['product']
+            product = self.validated_data["product"]
             id_cart = self.validated_data["id_cart"]
 
         except KeyError:

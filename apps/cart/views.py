@@ -76,7 +76,7 @@ class SubtractCartItemView(generics.CreateAPIView):
 
             serializer.save()
 
-            return Response({'message': 'Se resto el producto'}, status=status.HTTP_200_OK)
+            return Response({"message": "Se resto el producto"}, status=status.HTTP_200_OK)
 
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

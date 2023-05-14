@@ -37,9 +37,9 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
 
     username = models.CharField(max_length=60, unique=True)
-    email = models.EmailField('Correo', max_length=255, unique=True)
-    first_name = models.CharField('Nombre', max_length=20, blank=True, null=True, default="(Sin Nombre)")
-    last_name = models.CharField('Apellido', max_length=20, blank=True, null=True, default="(Sin Apellido)")
+    email = models.EmailField("Correo", max_length=255, unique=True)
+    first_name = models.CharField("Nombre", max_length=20, blank=True, null=True, default="(Sin Nombre)")
+    last_name = models.CharField("Apellido", max_length=20, blank=True, null=True, default="(Sin Apellido)")
     date_joined = models.DateTimeField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -49,11 +49,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = "users"
-        verbose_name = 'Usuario'
-        verbose_name_plural = 'Usuarios'
+        verbose_name = "Usuario"
+        verbose_name_plural = "Usuarios"
 
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["first_name", "last_name", "email"]
 
     def natural_key(self) -> Tuple[str]:
         return (self.username,)
@@ -72,8 +72,8 @@ class Subscription(models.Model):
     class Meta:
 
         db_table = "subscriptions"
-        verbose_name = 'subscripcion'
-        verbose_name_plural = 'subscripciones'
+        verbose_name = "subscripcion"
+        verbose_name_plural = "subscripciones"
 
     def __str__(self) -> str:
         return self.username

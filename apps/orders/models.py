@@ -48,13 +48,25 @@ class Commune(models.Model):
     def __str__(self) -> str:
         return self.name_commune
 
+CHOICES_WITHDRAWAL = [
+    ("Retiro en Tienda", "Retiro en Tienda"),
+    ("Envio a Domicilio", "Envio a Domicilio")
+]
+
+CHOICES_CONDITION = [
+    ("en preparacion", "en preparacion"),
+    ("en reparto", "en reparto"),
+    ("en camino", "en camino"),
+    ("entregado", "entregado")
+]
+
 # Model Order
 class Order(models.Model):
 
     code = models.UUIDField(default=uuid4, unique=True)
     created = models.DateTimeField(auto_now_add=True)
-    condition = models.CharField(max_length=20)
-    withdrawal = models.CharField(max_length=20)
+    condition = models.CharField(max_length=20, choices=CHOICES_CONDITION)
+    withdrawal = models.CharField(max_length=20, choices=CHOICES_WITHDRAWAL)
     direction = models.CharField(max_length=100)
     num_department = models.PositiveSmallIntegerField(blank=True, null=True)
     id_commune = models.ForeignKey(Commune, on_delete=models.CASCADE)

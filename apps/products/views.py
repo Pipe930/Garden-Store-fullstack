@@ -10,7 +10,7 @@ from rest_framework.permissions import AllowAny
 class ListCategoriesView(generics.ListAPIView):
 
     serializer_class = CategorySerializer
-    queryset = Category.objects.all().order_by('name_category')
+    queryset = Category.objects.all().order_by("name_category")
     permission_classes = [AllowAny]
 
     def get(self, request, format=None):
@@ -49,7 +49,7 @@ class CategoryDetailView(generics.RetrieveAPIView):
 class ListProductsView(generics.ListAPIView):
 
 
-    queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by('name_product')
+    queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by("name_product")
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
     permission_classes = [AllowAny]
@@ -74,7 +74,7 @@ class ProductView(generics.RetrieveAPIView):
     def get_object(self, slug:str):
         try:
             product = Product.objects.get(slug=slug) # get object product
-        except Product.DoesNotExist: # If it doesn't exist
+        except Product.DoesNotExist: # If it doesn"t exist
             raise Http404
 
         return product
@@ -87,15 +87,15 @@ class ProductView(generics.RetrieveAPIView):
 
 class ProductSearchView(generics.ListAPIView):
 
-    queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by('name_product')
+    queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by("name_product")
     serializer_class = ProductSerializer
     filter_backends = [filters.SearchFilter]
-    search_fields = ['name_product']
+    search_fields = ["name_product"]
     permission_classes = [AllowAny]
 
 class ListProductOfferView(generics.ListAPIView):
 
-    queryset = Product.objects.filter(condition=True, id_offer__isnull=False).order_by('name_product')
+    queryset = Product.objects.filter(condition=True, id_offer__isnull=False).order_by("name_product")
     serializer_class = ProductSerializer
     pagination_class = PageNumberPagination
     permission_classes = [AllowAny]
@@ -109,7 +109,7 @@ class ListProductOfferView(generics.ListAPIView):
         if len(serializer.data):
             return self.get_paginated_response(serializer.data)
 
-        return Response({'detail': 'No se encontradon productos en oferta'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "No se encontradon productos en oferta"}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProductFilterView(generics.ListAPIView):
 
@@ -120,7 +120,7 @@ class ProductFilterView(generics.ListAPIView):
 
         query = Product.objects.filter(
             condition = True, id_offer__isnull = True, id_category = id
-            ).order_by('name_product')
+            ).order_by("name_product")
 
         serializer = self.get_serializer(query, many=True)
 
