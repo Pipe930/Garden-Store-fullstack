@@ -6,14 +6,14 @@ from .models import Voucher, Cart, CartItems
 @admin.register(Voucher)
 class VoucherAdmin(admin.ModelAdmin):
 
-    list_display = ['code', 'created', 'state', 'total_price', 'id_user', 'id_cart']
+    list_display = ['id_user', 'created', 'state', 'total_price']
     list_filter = ['created', 'total_price']
     ordering = ('created',)
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
 
-    list_display = ['created', 'total', 'id_user']
+    list_display = ['id_user', 'created', 'total']
     list_filter = ['created', 'id_user']
     exclude = ('total',)
 

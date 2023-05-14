@@ -1,9 +1,32 @@
 from rest_framework import serializers
-from .models import Cart, CartItems
+from .models import Cart, CartItems, Voucher
 from apps.products.models import Product
 from django.http import Http404
 from apps.products.discount import discount
 from .cart_total import calculate_total_price, cart_total
+from .discount_stock import DiscountStock
+
+class VoucherSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Voucher
+        fields = '__all__'
+
+    def create(self, validated_data):
+
+        id_cart = validated_data["id_cart"]
+
+        discount_stock = DiscountStock()
+
+        discount_stock.discount_stock_product(id_cart)
+
+        voucher = Voucher.objects.create(**validated_data)
+
+        discount_stock.clean_cart(id_cart)
+
+        cart_total(id_cart)
+
+        return voucher
 
 class SimpleProductSerializer(serializers.ModelSerializer):
 

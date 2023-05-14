@@ -37,12 +37,12 @@ class Voucher(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     total_price = models.PositiveIntegerField()
     state = models.BooleanField(default=False)
-
+    description_state = models.CharField(max_length=20, default="Preparacion")
     id_user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
 
     def __str__(self) -> str:
-        return str(self.code)
+        return str(self.id_user.username)
 
     class Meta:
 

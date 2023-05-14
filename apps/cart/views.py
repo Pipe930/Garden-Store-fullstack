@@ -2,7 +2,7 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from .models import Cart
 from django.http import Http404
-from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, ClearCartSerializer
+from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, ClearCartSerializer, VoucherSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import JSONParser
@@ -96,5 +96,27 @@ class ClearCartItemsView(generics.CreateAPIView):
             serializer.save()
 
             return Response({"message": "Se limpio el carrito de compras"}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CreateVoucherView(generics.CreateAPIView):
+
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+    parser_classes = [JSONParser]
+    serializer_class = VoucherSerializer
+
+    def post(self, request):
+
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+
+            serializer.save()
+            return Response(
+                {
+                    "data": serializer.data,
+                    "message": "Se creo la compra con exito"
+                    }, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

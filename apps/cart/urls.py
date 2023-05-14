@@ -10,4 +10,8 @@ urlsCart = [
     path('items/clear', views.ClearCartItemsView.as_view())
 ]
 
+urlsVoucher = [
+    path("created", views.CreateVoucherView.as_view()),
+]
+
 urlsCart = format_suffix_patterns(urlsCart)
