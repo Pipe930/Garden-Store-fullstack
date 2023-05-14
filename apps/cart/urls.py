@@ -7,7 +7,7 @@ urlsCart = [
     path("create", views.CreateCartView.as_view()),
     path("item/add", views.AddCartItemView.as_view()),
     path("item/substract", views.SubtractCartItemView.as_view()),
-    path("items/clear", views.ClearCartItemsView.as_view())
+    path("items/clear/<int:id>", views.ClearCartItemsView.as_view())
 ]
 
 urlsVoucher = [

@@ -1,6 +1,6 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
-from .models import Cart
+from .models import Cart, CartItems
 from django.http import Http404
 from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, ClearCartSerializer, VoucherSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -81,23 +81,36 @@ class SubtractCartItemView(generics.CreateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class ClearCartItemsView(generics.CreateAPIView):
+class ClearCartItemsView(generics.DestroyAPIView):
 
     serializer_class = ClearCartSerializer
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
 
-    def create(self, request, *args, **kwargs):
+    def get_object(self, id:int):
 
-        serializer = self.get_serializer(data=request.data)
+        try:
+            cart = Cart.objects.get(id=id)
+        except Cart.DoesNotExist:
+            raise Http404
 
-        if serializer.is_valid():
+        return cart
 
-            serializer.save()
+    def delete(self, request, id:int, format=None):
 
-            return Response({"message": "Se limpio el carrito de compras"}, status=status.HTTP_200_OK)
+        cart = self.get_object(id)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        items = CartItems.objects.filter(id_cart = cart.id)
+
+        if len(items):
+
+            for item in items:
+                item.delete()
+
+            return Response({"message": "El carrito se a limpiado con exito"}, status=status.HTTP_204_NO_CONTENT)
+
+        return Response({"message": "Tu carrito esta vacio"}, status=status.HTTP_204_NO_CONTENT)
+
 
 class CreateVoucherView(generics.CreateAPIView):
 
