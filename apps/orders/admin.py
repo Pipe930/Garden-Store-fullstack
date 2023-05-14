@@ -13,7 +13,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
 
-    list_display = ["name_region", "initials"]
+    list_display = ["initials"]
     list_filter = ["name_region"]
     ordering = ("name_region",)
 
@@ -21,12 +21,12 @@ class RegionAdmin(admin.ModelAdmin):
 class ProvinceAdmin(admin.ModelAdmin):
 
     list_display = ["name_province"]
-    list_filter = ["name_province", "id_region"]
+    list_filter = ["id_region"]
     ordering = ("name_province",)
 
 @admin.register(Commune)
 class CommuneAdmin(admin.ModelAdmin):
 
     list_display = ["name_commune"]
-    list_filter = ["name_commune", "id_province"]
+    list_filter = ["id_province"]
     ordering = ("name_commune",)

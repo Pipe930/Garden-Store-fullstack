@@ -3,11 +3,8 @@ from .models import Cart, CartItems, Voucher
 from apps.products.models import Product
 from django.http import Http404
 from apps.products.discount import discount
-from .cart_total import CalculatePriceTotal
+from .cart_total import calculate_total_price, cart_total
 from .discount_stock import DiscountStock
-
-# Creation of the total price calculation object
-newObjectCalculate = CalculatePriceTotal()
 
 class VoucherSerializer(serializers.ModelSerializer):
 
@@ -28,7 +25,7 @@ class VoucherSerializer(serializers.ModelSerializer):
 
         discount_stock.clean_cart(id_cart)
 
-        newObjectCalculate.cart_total(id_cart)
+        cart_total(id_cart)
 
         return voucher
 
@@ -77,7 +74,7 @@ class CartSerializer(serializers.ModelSerializer):
     def main_total(self, cart: Cart):
 
         items = cart.items.all()
-        total = newObjectCalculate.calculate_total_price(items)
+        total = calculate_total_price(items)
         return total
 
     def create(self, validated_data):
@@ -109,7 +106,7 @@ class AddCartItemSerializer(serializers.ModelSerializer):
 
                 cartitem.save()
 
-                newObjectCalculate.cart_total(id_cart)
+                cart_total(id_cart)
 
                 self.instance = cartitem
 
@@ -126,7 +123,7 @@ class AddCartItemSerializer(serializers.ModelSerializer):
                 price=newPrice
                 )
 
-            newObjectCalculate.cart_total(id_cart)
+            cart_total(id_cart)
 
         return self.instance
 
@@ -157,6 +154,6 @@ class SubtractCartItemSerializer(serializers.ModelSerializer):
         cartitem.price = cartitem.quantity * cartitem.product.price
         cartitem.save()
 
-        newObjectCalculate.cart_total(cartitem.id_cart)
+        cart_total(cartitem.id_cart)
 
         return self.instance
