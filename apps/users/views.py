@@ -4,62 +4,19 @@ from django.http import Http404
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import authenticate, login, logout
 from .models import User, Subscription
 from .serializers import UserSerializer, SubscriptionSerializer, MessageSerializer, ChangePasswordSerializer
 from django.contrib.sessions.models import Session
 from datetime import datetime
 from .util import Util
-# from apps.cart.models import Cart
+from apps.cart.models import Cart
 from django.dispatch import receiver
 from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from rest_framework.parsers import JSONParser
-
-# View that lists registered users
-class UserListView(generics.ListAPIView):
-
-    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
-    permission_classes = [IsAdminUser, IsAuthenticated]
-    serializer_class = UserSerializer
-    queryset = User.objects.all()
-
-    # Petition GET
-    def get(self, request):
-
-        queryset = self.get_queryset() # get queryset
-        serializer = self.get_serializer(queryset, many=True) # The data is serialized
-
-        if len(serializer.data): # The list has data?
-            return Response({"users": serializer.data}, status=status.HTTP_200_OK)
-
-        return Response({'message': 'Usuarios Not Found'}, status=status.HTTP_204_NO_CONTENT)
-
-# View that a user registered
-class DetailUserView(generics.RetrieveAPIView):
-
-    authentication_classes = [SessionAuthentication, TokenAuthentication, BasicAuthentication]
-    permission_classes = [IsAdminUser, IsAuthenticated]
-    serializer_class = UserSerializer
-
-    def get_object(self, id:int):
-
-        try:
-            user = User.objects.get(id=id) # Get object user
-        except User.DoesNotExist:
-            raise Http404
-
-        return user
-
-    # Petition GET
-    def get(self, request, id:int, format=None):
-
-        user = self.get_object(id)
-        serializer = self.get_serializer(user) # The data is serialized
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
 # View that the user registers in the system
 class RegisterUserView(generics.CreateAPIView):
@@ -80,7 +37,7 @@ class RegisterUserView(generics.CreateAPIView):
 
             return Response({
                 "data": serializer.data,
-                "message": "Registered Successfully"
+                "message": "Se Registro Correctamente"
                 }, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -113,17 +70,11 @@ class LoginView(ObtainAuthToken):
                 if user.is_active: # Is the user active?
 
                     token, created = Token.objects.get_or_create(user=user) # A token is created for the user
+                    cart, createCart = Cart.objects.get_or_create(id_user=user) # A cart is created for the user
 
                     if created: # If a token exists
 
-                        # newCart = Cart.objects.get_or_create(idUser=user) # A cart is created for the user
                         login(request=request, user=user) # The user is authenticated
-
-                        # try:
-                        #     # It checks if the user has a cart created
-                        #     cart = Cart.objects.get(idUser = user.id)
-                        # except Cart.DoesNotExist:
-                        #     return Response({"message": "The cart doesn't exist"}, status=status.HTTP_400_BAD_REQUEST)
 
                         userJson = {
                             "token": token.key,
@@ -131,7 +82,7 @@ class LoginView(ObtainAuthToken):
                             "user_id": user.id,
                             "activate": user.is_active,
                             "staff": user.is_staff,
-                            # 'idCart': cart.id
+                            'idCart': cart.id
                         }
 
                         return Response(userJson, status=status.HTTP_200_OK) # Response
@@ -140,11 +91,6 @@ class LoginView(ObtainAuthToken):
                     token.delete() # Remove Token
                     token = Token.objects.create(user=user) # A new token is created
 
-                    # try:
-                    #     cart = Cart.objects.get(idUser = user.id)
-                    # except Cart.DoesNotExist:
-                    #     pass
-
                     # User information
                     userJson = {
                         "token": token.key,
@@ -152,13 +98,14 @@ class LoginView(ObtainAuthToken):
                         "user_id": user.id,
                         "activate": user.is_active,
                         "staff": user.is_staff,
-                        # 'idCart': cart.id
+                        'idCart': cart.id
                     }
+
                     return Response(userJson, status=status.HTTP_200_OK) # Response
 
-                return Response({'message': 'The user is not active'}, status= status.HTTP_401_UNAUTHORIZED)
+                return Response({'message': 'El usuario no esta activo'}, status= status.HTTP_401_UNAUTHORIZED)
 
-            return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message": "Credenciales Invalidas"}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -190,8 +137,8 @@ class LogoutView(generics.RetrieveAPIView):
                 logout(request=request)
 
                 # Messages
-                session_message = 'User session terminated'
-                token_message = 'Removed Token'
+                session_message = 'Session de usuario terminada'
+                token_message = 'Token Eliminado'
 
                 # Message in json format
                 message = {
@@ -201,10 +148,10 @@ class LogoutView(generics.RetrieveAPIView):
 
                 return Response(message, status=status.HTTP_200_OK)
 
-            return Response({'error': 'No user found with those credentials'},
+            return Response({'error': 'Usuario no encontrado con esas credenciales'},
                             status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response({"errors": "The token was not found in the request"}, status=status.HTTP_409_CONFLICT)
+            return Response({"errors": "El token no se a encontrado en la cabecera"}, status=status.HTTP_409_CONFLICT)
 
 # View that creates and lists subscriptions
 class ListSubscriptionView(generics.ListAPIView):
@@ -240,7 +187,7 @@ class CreateSubscriptionView(generics.CreateAPIView):
             return Response(
                 {
                     "data": serializer.data,
-                    "message": "Created Subscription Successfully"
+                    "message": "Subscripcion Creada con Exito"
                 },
                 status=status.HTTP_201_CREATED)
 
@@ -296,7 +243,7 @@ class SendEmailView(generics.CreateAPIView):
             print(serializer.data)
             Util.send_email(data=serializer.data) # The method of the util send email class is used
 
-            return Response({"data": serializer.data, "message": "Email send successfully"}, status=status.HTTP_200_OK)
+            return Response({"data": serializer.data, "message": "Email enviado con exito"}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -334,7 +281,7 @@ class ChangePasswordView(generics.UpdateAPIView):
             response = {
                 'status': 'success',
                 'code': status.HTTP_200_OK,
-                'message': 'Password updated successfully',
+                'message': 'Contraseña actualizada con exito',
                 'data': []
             }
 
