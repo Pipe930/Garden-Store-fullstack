@@ -1,6 +1,6 @@
 .container-form-register{
   display: flex;
-  min-height: 800px;
+  min-height: 700px;
   margin-top: 20px;
 
   form{
@@ -9,7 +9,7 @@
     border-radius: 10px;
     margin: auto;
     width: 90%;
-    max-width: 400px;
+    max-width: 450px;
     box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
 
     h2{
@@ -20,6 +20,19 @@
     }
 
     .container-inputs-register{
+
+      .container-fullname{
+
+        display: flex;
+
+        .fieldset-margin{
+          margin-left: 40px;
+        }
+
+        .fieldset-margin, fieldset{
+          width: 50%;
+        }
+      }
 
       display: grid;
       gap: 20px;
@@ -71,6 +84,38 @@
       p{
         a{
           text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 510px) {
+  .container-form-register{
+
+    form{
+
+      .container-inputs-register{
+
+        .container-fullname{
+          margin: -10px 0;
+
+          display: block;
+          .fieldset-margin{
+            margin-left: 0;
+          }
+
+          .fieldset-margin, fieldset{
+            width: 100%;
+          }
+
+          .fieldset-padding{
+            margin: 20px 0;
+          }
+
+          #field-end{
+            margin: 10px 0;
+          }
         }
       }
     }

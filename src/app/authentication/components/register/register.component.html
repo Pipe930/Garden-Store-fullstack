@@ -2,54 +2,58 @@
   <form action="" [formGroup]="formularioRegister" (ngSubmit)="enviar()">
     <h2>Registrarse</h2>
     <div class="container-inputs-register">
-      <fieldset>
-        <input
-        type="text"
-        formControlName="nombre"
-        class="inputs"
-        placeholder="Nombre">
-        <div class="container-messages-errors" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
-          <span class="message-errors" *ngIf="nombre.errors.minlength">Tiene que ser minimo de 4 caracteres</span>
-          <span class="message-errors" *ngIf="nombre.errors.maxlength">Tiene que ser maximo de 20 caracteres</span>
-        </div>
-      </fieldset>
-      <fieldset>
-        <input
-        type="text"
-        formControlName="apellido"
-        class="inputs"
-        placeholder="Apellido">
-        <div class="container-messages-errors" *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
-          <span class="message-errors" *ngIf="apellido.errors.minlength">Tiene que ser minimo de 4 caracteres</span>
-          <span class="message-errors" *ngIf="apellido.errors.maxlength">Tiene que ser maximo de 20 caracteres</span>
-        </div>
-      </fieldset>
-      <fieldset>
-        <input
-        type="text"
-        class="inputs"
-        formControlName="nombre_usuario"
-        required
-        placeholder="Usuario">
-        <div class="container-messages-errors" *ngIf="nombre_usuario.invalid && (nombre_usuario.dirty || nombre_usuario.touched)">
-          <span class="message-errors" *ngIf="nombre_usuario.errors.required">Este campo es requerido</span>
-          <span class="message-errors" *ngIf="nombre_usuario.errors.minlength">Tiene que ser minimo de 5 caracteres</span>
-          <span class="message-errors" *ngIf="nombre_usuario.errors.maxlength">Tiene que ser maximo de 60 caracteres</span>
-        </div>
-      </fieldset>
-      <fieldset>
-        <input
-        type="email"
-        class="inputs"
-        formControlName="correo"
-        required
-        placeholder="Email">
-        <div class="container-messages-errors" *ngIf="correo.invalid && (correo.dirty || correo.touched)">
-          <span class="message-errors" *ngIf="correo.errors.required">Este campo es requerido</span>
-          <span class="message-errors" *ngIf="correo.errors.email">Tiene que ingresar un correo valido</span>
-          <span class="message-errors" *ngIf="correo.errors.maxlength">Tiene que ser maximo de 255 caracteres</span>
-        </div>
-      </fieldset>
+      <div class="container-fullname">
+        <fieldset class="fieldset-padding">
+          <input
+          type="text"
+          formControlName="nombre"
+          class="inputs"
+          placeholder="Nombre">
+          <div class="container-messages-errors" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+            <span class="message-errors" *ngIf="nombre.errors.minlength">Tiene que ser minimo de 4 caracteres</span>
+            <span class="message-errors" *ngIf="nombre.errors.maxlength">Tiene que ser maximo de 20 caracteres</span>
+          </div>
+        </fieldset>
+        <fieldset class="fieldset-margin">
+          <input
+          type="text"
+          formControlName="apellido"
+          class="inputs"
+          placeholder="Apellido">
+          <div class="container-messages-errors" *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
+            <span class="message-errors" *ngIf="apellido.errors.minlength">Tiene que ser minimo de 4 caracteres</span>
+            <span class="message-errors" *ngIf="apellido.errors.maxlength">Tiene que ser maximo de 20 caracteres</span>
+          </div>
+        </fieldset>
+      </div>
+      <div class="container-fullname">
+        <fieldset class="fieldset-padding">
+          <input
+          type="text"
+          class="inputs"
+          formControlName="nombre_usuario"
+          required
+          placeholder="Usuario">
+          <div class="container-messages-errors" *ngIf="nombre_usuario.invalid && (nombre_usuario.dirty || nombre_usuario.touched)">
+            <span class="message-errors" *ngIf="nombre_usuario.errors.required">Este campo es requerido</span>
+            <span class="message-errors" *ngIf="nombre_usuario.errors.minlength">Tiene que ser minimo de 5 caracteres</span>
+            <span class="message-errors" *ngIf="nombre_usuario.errors.maxlength">Tiene que ser maximo de 60 caracteres</span>
+          </div>
+        </fieldset>
+        <fieldset class="fieldset-margin" id="field-end">
+          <input
+          type="email"
+          class="inputs"
+          formControlName="correo"
+          required
+          placeholder="Email">
+          <div class="container-messages-errors" *ngIf="correo.invalid && (correo.dirty || correo.touched)">
+            <span class="message-errors" *ngIf="correo.errors.required">Este campo es requerido</span>
+            <span class="message-errors" *ngIf="correo.errors.email">Tiene que ingresar un correo valido</span>
+            <span class="message-errors" *ngIf="correo.errors.maxlength">Tiene que ser maximo de 255 caracteres</span>
+          </div>
+        </fieldset>
+      </div>
       <fieldset>
         <input
         type="password"
