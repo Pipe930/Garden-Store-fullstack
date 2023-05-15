@@ -30,7 +30,7 @@ class CartUserView(generics.RetrieveAPIView):
 
         serializer = self.get_serializer(cart)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 class CreateCartView(generics.CreateAPIView):
 
@@ -44,9 +44,9 @@ class CreateCartView(generics.CreateAPIView):
         if serializer.is_valid():
             serializer.save()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class AddCartItemView(generics.CreateAPIView):
 
@@ -77,12 +77,12 @@ class AddCartItemView(generics.CreateAPIView):
 
             if product.stock < quantity:
 
-                return Response({"message": "La cantidad supera el stock disponible"}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"message": "La cantidad supera el stock disponible"}, status.HTTP_400_BAD_REQUEST)
 
             serializer.save()
-            return Response({"data": serializer.data, "message": "Agregado al carrito con exito"}, status=status.HTTP_201_CREATED)
+            return Response({"data": serializer.data, "message": "Agregado al carrito con exito"}, status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class SubtractCartItemView(generics.CreateAPIView):
 
@@ -98,10 +98,10 @@ class SubtractCartItemView(generics.CreateAPIView):
 
             serializer.save()
 
-            return Response({"message": "Se resto el producto"}, status=status.HTTP_200_OK)
+            return Response({"message": "Se resto el producto"}, status.HTTP_200_OK)
 
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class ClearCartItemsView(generics.DestroyAPIView):
 
@@ -128,9 +128,9 @@ class ClearCartItemsView(generics.DestroyAPIView):
             for item in items:
                 item.delete()
 
-            return Response({"message": "El carrito se a limpiado con exito"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"message": "El carrito se a limpiado con exito"}, status.HTTP_204_NO_CONTENT)
 
-        return Response({"message": "Tu carrito esta vacio"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Tu carrito esta vacio"}, status.HTTP_204_NO_CONTENT)
 
 
 class CreateVoucherView(generics.CreateAPIView):
@@ -151,9 +151,9 @@ class CreateVoucherView(generics.CreateAPIView):
                 {
                     "data": serializer.data,
                     "message": "Se creo la compra con exito"
-                    }, status=status.HTTP_201_CREATED)
+                    }, status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class CancelPurchaseView(generics.UpdateAPIView):
 
@@ -193,9 +193,9 @@ class CancelPurchaseView(generics.UpdateAPIView):
                 product.save()
 
             serializer.save()
-            return Response({"message": "Se a cancelado la compra"}, status=status.HTTP_200_OK)
+            return Response({"message": "Se a cancelado la compra"}, status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 class ListVouchersView(generics.ListAPIView):
 
@@ -210,9 +210,9 @@ class ListVouchersView(generics.ListAPIView):
 
         if len(serializer.data):
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status.HTTP_200_OK)
 
-        return Response({"message":"No haz realizado ninguna compra"}, status=status.HTTP_204_NO_CONTENT)
+        return Response({"message":"No haz realizado ninguna compra"}, status.HTTP_204_NO_CONTENT)
 
 class DetailVoucherView(generics.RetrieveAPIView):
 
@@ -234,5 +234,5 @@ class DetailVoucherView(generics.RetrieveAPIView):
         voucher = self.get_object(id)
         serializer = self.get_serializer(voucher)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status.HTTP_200_OK)
 

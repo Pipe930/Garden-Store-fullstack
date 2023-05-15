@@ -38,9 +38,9 @@ class RegisterUserView(generics.CreateAPIView):
             return Response({
                 "data": serializer.data,
                 "message": "Se Registro Correctamente"
-                }, status=status.HTTP_201_CREATED)
+                }, status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 # View that authenticates the user
 class LoginView(ObtainAuthToken):
@@ -85,7 +85,7 @@ class LoginView(ObtainAuthToken):
                             "idCart": cart.id
                         }
 
-                        return Response(userJson, status=status.HTTP_200_OK) # Response
+                        return Response(userJson, status.HTTP_200_OK) # Response
 
                     # If there is not token
                     token.delete() # Remove Token
@@ -101,13 +101,13 @@ class LoginView(ObtainAuthToken):
                         "idCart": cart.id
                     }
 
-                    return Response(userJson, status=status.HTTP_200_OK) # Response
+                    return Response(userJson, status.HTTP_200_OK) # Response
 
-                return Response({"message": "El usuario no esta activo"}, status= status.HTTP_401_UNAUTHORIZED)
+                return Response({"message": "El usuario no esta activo"},  status.HTTP_401_UNAUTHORIZED)
 
-            return Response({"message": "Credenciales Invalidas"}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({"message": "Credenciales Invalidas"}, status.HTTP_401_UNAUTHORIZED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 # View to logout the user
 class LogoutView(generics.RetrieveAPIView):
@@ -146,12 +146,12 @@ class LogoutView(generics.RetrieveAPIView):
                     "token_message": token_message
                 }
 
-                return Response(message, status=status.HTTP_200_OK)
+                return Response(message, status.HTTP_200_OK)
 
             return Response({"error": "Usuario no encontrado con esas credenciales"},
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status.HTTP_400_BAD_REQUEST)
         except:
-            return Response({"errors": "El token no se a encontrado en la cabecera"}, status=status.HTTP_409_CONFLICT)
+            return Response({"errors": "El token no se a encontrado en la cabecera"}, status.HTTP_409_CONFLICT)
 
 # View that creates and lists subscriptions
 class ListSubscriptionView(generics.ListAPIView):
@@ -167,7 +167,7 @@ class ListSubscriptionView(generics.ListAPIView):
         queryset = self.get_queryset() # get queryset
         serializer = self.get_serializer(queryset, many=True) # The data is serialized
 
-        return Response({"subscriptions": serializer.data}, status=status.HTTP_200_OK)
+        return Response({"subscriptions": serializer.data}, status.HTTP_200_OK)
 
 class CreateSubscriptionView(generics.CreateAPIView):
 
@@ -189,9 +189,9 @@ class CreateSubscriptionView(generics.CreateAPIView):
                     "data": serializer.data,
                     "message": "Subscripcion Creada con Exito"
                 },
-                status=status.HTTP_201_CREATED)
+                status.HTTP_201_CREATED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
 # View that gets a subscription by id
@@ -217,7 +217,7 @@ class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
         subcription = self.get_object(id) # Object
         serializer = self.get_serializer(subcription) # Serializer data
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status.HTTP_200_OK)
 
     # Petition DELETE
     def delete(self, request, id:int, format=None):
@@ -225,7 +225,7 @@ class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
         subscription = self.get_object(id) # Object
         subscription.delete() # Delete a Object subscription
 
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status.HTTP_204_NO_CONTENT)
 
 # View for mailing
 class SendEmailView(generics.CreateAPIView):
@@ -243,9 +243,9 @@ class SendEmailView(generics.CreateAPIView):
             print(serializer.data)
             Util.send_email(data=serializer.data) # The method of the util send email class is used
 
-            return Response({"data": serializer.data, "message": "Email enviado con exito"}, status=status.HTTP_200_OK)
+            return Response({"data": serializer.data, "message": "Email enviado con exito"}, status.HTTP_200_OK)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 # View that changes the user"s password
 class ChangePasswordView(generics.UpdateAPIView):
@@ -272,7 +272,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 
             # Check if the password is correct
             if not self.object.check_password(serializer.data.get("old_password")):
-                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({"old_password": ["Wrong password."]}, status.HTTP_400_BAD_REQUEST)
 
             # The password that the user will get is encrypted
             self.object.set_password(serializer.data.get("new_password"))
@@ -287,7 +287,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 
             return Response(response)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
