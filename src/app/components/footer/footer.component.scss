@@ -1,0 +1,31 @@
+.pie-pagina{
+  background-color: #9bc0ff;
+  padding: 30px 20px 20px 20px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  .container-redessociales{
+    text-align: center;
+    a{
+      margin: 0 20px;
+    }
+  }
+  p{
+    font-size: 17px;
+    color: rgb(41, 109, 77);
+    font-weight: 900;
+  }
+}
+
+@media (max-width: 560px) {
+  .pie-pagina{
+    display: block;
+    .container-redessociales{
+      margin-bottom: 30px;
+    }
+
+    p{
+      text-align: center;
+    }
+  }
+}
