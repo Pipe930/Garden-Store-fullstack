@@ -1,0 +1,88 @@
+.container-form-login{
+  display: flex;
+  min-height: 650px;
+
+  form{
+    padding: 30px;
+    background: #FFFFFF;
+    border-radius: 10px;
+    margin: auto;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.5);
+
+    h2{
+      font-size: 35px;
+      margin-bottom: 25px;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .container-inputs-login{
+      display: grid;
+      gap: 20px;
+
+      fieldset{
+        color: gray;
+        border: none;
+
+        .container-messages-errors{
+          .message-errors{
+            color: #FF2D2D;
+            text-align: left;
+          }
+        }
+
+        .inputs{
+          width: 100%;
+          background: none;
+          color: black;
+          font-size: 15px;
+          padding: 10px 3px;
+          border: none;
+          outline: none;
+          border-bottom: 1px solid #808080;
+        }
+
+      }
+      .btn-form{
+        background-color: #5EB6F0;
+        color: #F5F5F5;
+        font-size: 20px;
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        margin-top: 5px;
+        cursor: pointer;
+      }
+
+      .btn-form:hover{
+        background-color: #5EE164;
+        transition: .3s ease-in-out;
+      }
+    }
+
+    .container-links{
+      display: flex;
+      flex-direction: column;
+      margin-top: 20px;
+      padding: 0 20px;
+      text-align: center;
+      font-size: 17px;
+
+      .registro{
+        a{
+          text-decoration: none;
+        }
+      }
+    }
+
+    .contrasena{
+      margin: 15px 0 0 0;
+      .olvide-contrasena{
+        text-decoration: none;
+      }
+    }
+  }
+
+}
