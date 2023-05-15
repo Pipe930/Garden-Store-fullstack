@@ -12,6 +12,9 @@ urlsCart = [
 
 urlsVoucher = [
     path("created", views.CreateVoucherView.as_view()),
+    path("cancel/<int:id>", views.CancelPurchaseView.as_view()),
+    path("user/<int:id>", views.ListVouchersView.as_view()),
+    path("<int:id>", views.DetailVoucherView.as_view()),
 ]
 
 urlsCart = format_suffix_patterns(urlsCart)

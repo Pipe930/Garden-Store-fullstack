@@ -29,6 +29,21 @@ class VoucherSerializer(serializers.ModelSerializer):
 
         return voucher
 
+class CancelVoucherSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Voucher
+        fields = ["state"]
+
+    def update(self, instance, validated_data):
+
+        instance.state = validated_data.get('state', instance.state)
+
+        instance.save()
+
+        return instance
+
 # Simple product serializer
 class SimpleProductSerializer(serializers.ModelSerializer):
 

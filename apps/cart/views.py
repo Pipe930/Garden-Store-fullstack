@@ -1,9 +1,9 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
-from .models import Cart, CartItems
+from .models import Cart, CartItems, Voucher
 from apps.products.models import Product
 from django.http import Http404
-from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, VoucherSerializer
+from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, VoucherSerializer, CancelVoucherSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import JSONParser
@@ -154,3 +154,85 @@ class CreateVoucherView(generics.CreateAPIView):
                     }, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CancelPurchaseView(generics.UpdateAPIView):
+
+    serializer_class = CancelVoucherSerializer
+    parser_classes = [JSONParser]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get_object(self, id:int):
+
+        try:
+            voucher = Voucher.objects.get(id=id)
+        except Voucher.DoesNotExist:
+            raise Http404
+
+        return voucher
+
+    def put(self, request, id:int):
+
+        voucher = self.get_object(id)
+        serializer = self.get_serializer(voucher, data=request.data)
+
+        if serializer.is_valid():
+
+            products = voucher.products
+            items = products["items"]
+
+            for item in items:
+
+                id = item["id"]
+                quantity = item["quantity"]
+                product = Product.objects.get(id=id)
+
+                new_stock = product.stock + quantity
+
+                product.stock = new_stock
+                product.save()
+
+            serializer.save()
+            return Response({"message": "Se a cancelado la compra"}, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ListVouchersView(generics.ListAPIView):
+
+    serializer_class = VoucherSerializer
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, id:int, format=None):
+
+        queryset = Voucher.objects.filter(id_user=id, state=True).order_by("created")
+        serializer = self.get_serializer(queryset, many=True)
+
+        if len(serializer.data):
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response({"message":"No haz realizado ninguna compra"}, status=status.HTTP_204_NO_CONTENT)
+
+class DetailVoucherView(generics.RetrieveAPIView):
+
+    serializer_class = VoucherSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get_object(self, id:int):
+
+        try:
+            voucher = Voucher.objects.get(id=id)
+        except Voucher.DoesNotExist:
+            raise Http404
+
+        return voucher
+
+    def get(self, request, id:int):
+
+        voucher = self.get_object(id)
+        serializer = self.get_serializer(voucher)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
