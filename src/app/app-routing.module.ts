@@ -12,6 +12,10 @@ const routes: Routes = [
   {
     path: "home",
     component: HomeComponent
+  },
+  {
+    path: "auth",
+    loadChildren: () => import("./authentication/authentication.module").then(module => module.AuthenticationModule)
   }
 ];
 

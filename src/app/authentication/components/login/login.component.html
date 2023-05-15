@@ -1,0 +1,47 @@
+<div class="container-form-login">
+  <!-- Titulo Formulario -->
+  <form novalidate [formGroup]="formularioLogin" (ngSubmit)="enviar()">
+    <h2>Iniciar Sesion</h2>
+    <div class="container-inputs-login">
+        <fieldset>
+            <input
+            type="text"
+            name="usuario"
+            id="usuario"
+            formControlName="username"
+            required
+            class="inputs"
+            placeholder="Usuario">
+            <div class="container-messages-errors" *ngIf="username.invalid && (username.dirty || username.touched)">
+              <span class="message-errors" *ngIf="username.errors.required">Este campo es requerido</span>
+              <span class="message-errors" *ngIf="username.errors.minlength">Tiene que ser minimo de 5 caracteres</span>
+              <span class="message-errors" *ngIf="username.errors.maxlength">Tiene que ser maximo de 60 caracteres</span>
+            </div>
+        </fieldset>
+        <fieldset>
+            <input
+            type="password"
+            name="contrasenia"
+            required
+            id="contrasenia"
+            formControlName="password"
+            class="inputs"
+            placeholder="Contraseña">
+            <div class="container-messages-errors" *ngIf="password.invalid && (password.dirty || password.touched)">
+              <span class="message-errors" *ngIf="password.errors.required">Este campo es requerido</span>
+              <span class="message-errors" *ngIf="password.errors.minlength">Tiene que ser minimo de 8 caracteres</span>
+              <span class="message-errors" *ngIf="password.errors.maxlength">Tiene que ser maximo de 16 caracteres</span>
+            </div>
+        </fieldset>
+        <button type="submit" class="btn-form">Iniciar</button>
+    </div>
+    <div class="container-links">
+      <div class="registro">
+        ¿No tienes cuenta?, <a [routerLink]="['/auth/register']">Registrate aqui</a>
+      </div>
+      <div class="contrasena">
+        <a [routerLink]="['/auth/reset-password']" class="olvide-contrasena">¿Olvidaste tu contraseña?</a>
+      </div>
+    </div>
+  </form>
+</div>

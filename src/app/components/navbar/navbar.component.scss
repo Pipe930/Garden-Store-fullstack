@@ -1,10 +1,10 @@
-$menuBreakpoint: 970px;
+$menuBreakpoint: 990px;
 $menuHeight: 60px;
 
 #navbar{
   background-color: #9bc0ff;
   height: $menuHeight;
-  padding: 0 20px;
+  padding: 0 40px;
   // box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
   width: 100%;
 
@@ -158,5 +158,11 @@ $menuHeight: 60px;
         --clippy: polygon(0 0, 100% 0, 100% 100%, 0% 100%);
       }
     }
+  }
+}
+
+@media screen and (max-width: $menuBreakpoint) {
+  #navbar{
+    padding: 0 20px;
   }
 }
