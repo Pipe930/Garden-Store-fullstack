@@ -13,7 +13,7 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(Region)
 class RegionAdmin(admin.ModelAdmin):
 
-    list_display = ["initials"]
+    list_display = ["name_region", "initials"]
     list_filter = ["name_region"]
     ordering = ("name_region",)
 
