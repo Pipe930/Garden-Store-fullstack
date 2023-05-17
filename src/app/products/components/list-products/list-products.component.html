@@ -1,0 +1,120 @@
+<div class="continaer-search">
+  <div class="container-btn-sidenav">
+    <button (click)="toggleNav()" class="btn-open-sidenav">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-filter-square" viewBox="0 0 16 16">
+        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+        <path d="M6 11.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
+      </svg>
+    </button>
+  </div>
+  <input
+  type="search"
+  placeholder="buscar..."
+  id="searchproduct"
+  (keyup)="search($event)"
+  >
+  <!-- <div class="container-check">
+    <label for="" class="text-check">Filter</label>
+    <div class="check-box">
+      <input type="checkbox" name="" id="btn-switch" (click)="activateFilter()">
+      <label for="btn-switch" class="label-switch"></label>
+    </div>
+  </div>
+  <select name="" id="" class="select-form" *ngIf="filterActivate" (change)="filter($event)">
+    <option *ngFor="let category of servicio.listCategories" [value]="category.id">{{category.name_category}}</option>
+  </select> -->
+</div>
+
+<div class="container-list">
+
+  <aside class="sidenav-filters">
+    <h2>Filters</h2>
+    <select name="" id="" class="select-form" (change)="filter($event)">
+      <option *ngFor="let category of servicio.listCategories" [value]="category.id">{{category.name_category}}</option>
+    </select>
+  </aside>
+
+  <div class="sidenav" [class.sidenav-open]="isNavOpen">
+    <button (click)="toggleNav()" class="btn-close-sidenav">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+      </svg>
+    </button>
+    <div class="container-filter">
+      <h2>Filters</h2>
+      <select name="" id="" class="select-form" (change)="filter($event)">
+        <option *ngFor="let category of servicio.listCategories" [value]="category.id">{{category.name_category}}</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="container-title">
+    <div class="title">
+      <h1>
+        Productos
+      </h1>
+    </div>
+    <div class="container-products" *ngIf="activeList">
+
+      <article class="product" *ngFor="let product of listProducts | search:name">
+        <div class="header-product">
+          <img [src]="product.image" alt="image product">
+        </div>
+        <div class="body-product">
+          <h2>
+            {{product.name_product}}
+          </h2>
+          <ul>
+            <li>
+              Precio: ${{product.price}}
+            </li>
+            <li>
+              Stock: {{product.stock}}
+            </li>
+            <li>
+              Categoria: {{product.idCategory}}
+            </li>
+            <li>
+              <p>
+                Descripcion: {{product.description}}
+              </p>
+            </li>
+          </ul>
+          <!-- <button type="button" [routerLink]="['product/', product.slug]">Ver</button> -->
+        </div>
+      </article>
+    </div>
+
+    <div class="container-products" *ngIf="filterActivate">
+      <article class="product" *ngFor="let product2 of listFilter">
+        <div class="header-product">
+          <img [src]="'http://localhost:8000' + product2.image" alt="image product">
+        </div>
+        <div class="body-product">
+          <h2>
+            {{product2.name_product}}
+          </h2>
+          <ul>
+            <li>
+              Precio: ${{product2.price}}
+            </li>
+            <li>
+              Stock: {{product2.stock}}
+            </li>
+            <li>
+              Categoria: {{product2.idCategory}}
+            </li>
+            <li>
+              <p>
+                Descripcion: {{product2.description}}
+              </p>
+            </li>
+          </ul>
+          <!-- <button type="button" [routerLink]="['product/', product2.slug]">Ver</button> -->
+        </div>
+      </article>
+    </div>
+  </div>
+
+
+</div>

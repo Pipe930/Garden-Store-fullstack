@@ -18,7 +18,7 @@ class ListCategoriesView(generics.ListAPIView):
 
         if len(queryset):
             serializer = self.get_serializer(queryset, many=True) # The data is serialized
-            return Response({"categories": serializer.data}, status.HTTP_200_OK)
+            return Response(serializer.data, status.HTTP_200_OK)
 
         return Response({"message": "No tenemos categorias registradas"}, status.HTTP_204_NO_CONTENT)
 
@@ -63,7 +63,7 @@ class ListProductsView(generics.ListAPIView):
         if len(serializer.data): # Is the list empty?
             return self.get_paginated_response(serializer.data)
 
-        return Response({"message": "No tenemos productos registrados"}, status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "No tenemos productos registrados"}, status.HTTP_204_NO_CONTENT)
 
 # View for obtain is a product
 class ProductView(generics.RetrieveAPIView):
@@ -111,7 +111,7 @@ class ListProductOfferView(generics.ListAPIView):
 
             return self.get_paginated_response(serializer.data)
 
-        return Response({"detail": "No se encontradon productos en oferta"}, status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "No se encontradon productos en oferta"}, status.HTTP_204_NO_CONTENT)
 
 class ProductFilterView(generics.ListAPIView):
 

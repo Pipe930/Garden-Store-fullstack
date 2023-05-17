@@ -5,7 +5,6 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { AppRoutingModule } from './app-routing.module';
-import { AuthenticationModule } from './authentication/authentication.module';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';

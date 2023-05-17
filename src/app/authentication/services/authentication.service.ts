@@ -10,7 +10,7 @@ import { Register, RegisterResponse } from '../modules/register';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private urlApi: string = "http://192.168.1.11:8000/api/v1/user/";
+  private urlApi: string = "http://127.0.0.1:8000/api/v1/user/";
 
   constructor(
     private http: HttpClient,
