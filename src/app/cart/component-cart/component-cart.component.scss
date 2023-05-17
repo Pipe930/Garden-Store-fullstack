@@ -1,0 +1,158 @@
+.container-cart{
+
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 100px;
+
+  h2{
+
+    font-size: 30px;
+    margin-bottom: 40px;
+
+  }
+
+  .table-container{
+
+    .cart{
+
+      width: 90%;
+      max-width: 1000px;
+      margin: auto;
+      text-align: center;
+      border-collapse: collapse;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 10px 5px 5px #808B96;
+
+      caption{
+
+        background-color: #A9DFBF;
+        padding: 10px 0;
+
+        h2{
+
+          font-size: 30px;
+          color: #34495E;
+        }
+
+      }
+
+      thead{
+
+        background-color: #A9DFBF;
+        border-bottom: 2px solid #566573;
+
+        tr{
+
+          th{
+
+            padding: 10px 0;
+            font-size: 18px;
+
+          }
+        }
+      }
+
+      tbody{
+
+        tr:nth-child(even){
+
+          background-color: #E5E8E8;
+        }
+
+        tr{
+
+          background-color: #FBFCFC;
+
+          td{
+
+            padding: 15px 0;
+            font-size: 16px;
+
+            .btn-sub, .btn-sum{
+
+              box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.2);
+              padding: 4px 10px;
+              margin: 0 10px;
+              border: none;
+              background-color: #F8C471;
+              border-radius: 5px;
+              cursor: pointer;
+              font-family: 900;
+
+            }
+
+            .btn-sub:hover, .btn-sum:hover{
+
+              background-color: #F39C12;
+              transition: 0.3s;
+
+            }
+          }
+        }
+      }
+
+      tfoot{
+
+        background-color: #AED6F1;
+
+        tr{
+
+          td{
+
+            padding: 15px 0;
+            font-size: 16px;
+
+            .btn-voucher{
+
+              padding: 8px 25px;
+              background-color: #58D68D;
+              border: none;
+              border-radius: 10px;
+              cursor: pointer;
+              box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.2);
+
+            }
+
+            .btn-voucher:hover{
+
+              background-color: #28B463;
+              transition: 0.3s all;
+
+            }
+
+            .btn-clear{
+
+              box-shadow: 2px 5px 5px rgba(0, 0, 0, 0.2);
+              padding: 6px 10px;
+              margin: 0 10px;
+              border: none;
+              background-color: #F1948A;
+              border-radius: 5px;
+              cursor: pointer;
+              font-family: 900;
+
+            }
+
+            .btn-clear:hover{
+
+              background-color: #EC7063;
+              transition: 0.3s;
+
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .container-cart{
+    .table-container{
+      width: 100%;
+      margin: auto;
+      overflow-x: scroll;
+    }
+  }
+}

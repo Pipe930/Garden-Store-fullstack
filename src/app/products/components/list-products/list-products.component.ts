@@ -27,6 +27,7 @@ export class ListProductsComponent {
     this.service.listProducts$.subscribe(restult => {
         this.listProducts = restult;
       })
+
   }
 
   public toggleNav():void {

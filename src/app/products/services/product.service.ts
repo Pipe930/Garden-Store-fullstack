@@ -36,9 +36,11 @@ export class ProductService {
       delay(1000)
     ).subscribe(result => {
       this.page = this.page + 1;
-      this.listProducts.next(result.results);
-      if(result.results.length){
-        this.activeFooter = true;
+      if(result){
+        this.listProducts.next(result.results);
+        if(result.results.length){
+          this.activeFooter = true;
+        }
       }
     }, error => {
       console.log(error);
@@ -54,7 +56,9 @@ export class ProductService {
       delay(1000)
     ).subscribe(result => {
       this.page = this.page + 1;
-      this.listProducts.next(this.listProducts.getValue().concat(result.products));
+      if(result){
+        this.listProducts.next(this.listProducts.getValue().concat(result.products));
+      }
     }, error => {
       console.log(error);
     });
@@ -76,8 +80,8 @@ export class ProductService {
           'Content-Type': 'application/json'
         })
       }
-    ).subscribe(resultado => {
-      this.listSearch = resultado.results;
+    ).subscribe(result => {
+      this.listSearch = result.results;
     }, error => {
       console.log(error);
     });
@@ -112,10 +116,12 @@ export class ProductService {
       delay(1000)
     ).subscribe(result => {
       this.page = this.page + 1;
-      this.listProductsOffer.next(result.results);
-      console.log(result.results);
-      if(result.results.length){
-        this.activeFooter = true;
+      if(result){
+        this.listProductsOffer.next(result.results);
+        console.log(result.results);
+        if(result.results.length){
+          this.activeFooter = true;
+        }
       }
     }, error => {
       console.log(error);

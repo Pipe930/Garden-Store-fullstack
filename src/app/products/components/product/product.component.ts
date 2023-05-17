@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Product } from '../../modules/product';
 import { ProductService } from '../../services/product.service';
 import { ActivatedRoute, Router } from '@angular/router';
-// import { CartService } from 'src/app/cart/services/cart.service';
+import { CartService } from 'src/app/cart/services/cart.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -20,7 +20,7 @@ export class ProductComponent implements OnInit {
   constructor(
     private servicio: ProductService,
     private ruta: ActivatedRoute,
-    // private cart: CartService,
+    private cart: CartService,
     private rout: Router
   ) {
     this.ruta.params.subscribe(resultado => {
@@ -56,27 +56,27 @@ export class ProductComponent implements OnInit {
     }
   }
 
-  // public addCart():void{
-  //   const user = JSON.parse(sessionStorage.getItem('user')!);
+  public addCart():void{
+    const user = JSON.parse(sessionStorage.getItem('user')!);
 
-  //   if(user){
+    if(user){
 
-  //     const product = {
-  //       product: this.idProduct,
-  //       quantity: this.quality,
-  //       idCart: user.idCart,
-  //       price: this.product.price
-  //     }
+      const product = {
+        product: this.idProduct,
+        quantity: this.quality,
+        id_cart: user.idCart,
+        price: this.product.price
+      }
 
-  //     this.cart.cartAdd(product);
-  //   } else {
-  //     Swal.fire({
-  //       title: "Debes inicar Sesion",
-  //       text: "Para poder agregar productos a tu carrito inicia sesion",
-  //       icon: "info"
-  //     })
-  //     this.rout.navigate(['auth/login']);
-  //   }
+      this.cart.cartAdd(product);
+    } else {
+      Swal.fire({
+        title: "Debes inicar Sesion",
+        text: "Para poder agregar productos a tu carrito inicia sesion",
+        icon: "info"
+      })
+      this.rout.navigate(['auth/login']);
+    }
 
-  // }
+  }
 }
