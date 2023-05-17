@@ -7,12 +7,14 @@ import { ProductsRoutingModule } from './products-routing.module';
 import { ListProductsComponent } from './components/list-products/list-products.component';
 import { SearchPipe } from './pipes/search.pipe';
 import { ProductService } from './services/product.service';
+import { ProductComponent } from './components/product/product.component';
 
 
 @NgModule({
   declarations: [
     ListProductsComponent,
-    SearchPipe
+    SearchPipe,
+    ProductComponent
   ],
   imports: [
     CommonModule,

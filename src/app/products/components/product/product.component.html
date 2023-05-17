@@ -1,0 +1,38 @@
+<div class="container-product" *ngIf="product">
+  <article class="product">
+    <div class="container-img">
+      <img [src]="product.image" alt="image product">
+    </div>
+    <div class="container-content">
+      <h1>{{product.name_product}}</h1>
+      <ul>
+        <li>
+          Precio: ${{product.price}}
+        </li>
+        <li>
+          Stock: {{product.stock}}
+        </li>
+        <li>
+          Categoria: {{product.idCategory}}
+        </li>
+        <li *ngIf="product.idOffer">
+          Descuento: 20%
+        </li>
+        <p>
+          Descripcion <br>
+          {{product.description}}
+        </p>
+      </ul>
+      <h2 class="sub-title">Cantidad</h2>
+      <div class="container-btns">
+        <button type="button" class="btn-max" (click)="sum()">+</button>
+        <p>{{quality}}</p>
+        <button type="button" class="btn-min" (click)="substract()">-</button>
+      </div>
+      <div class="container-buttons">
+        <!-- <button class="add-cart" (click)="addCart()">Agregar Carrito</button> -->
+        <button type="button" [routerLink]="['/products']" class="btn-volver">Volver</button>
+      </div>
+    </div>
+  </article>
+</div>
