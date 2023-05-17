@@ -48,6 +48,22 @@ class Commune(models.Model):
     def __str__(self) -> str:
         return self.name_commune
 
+class Branch(models.Model):
+
+    name_branch = models.CharField(max_length=100, unique=True)
+    direccion = models.CharField(max_length=255)
+    razon_social = models.CharField(max_length=100)
+    id_commune = models.ForeignKey(Commune, on_delete=models.CASCADE)
+
+    class Meta:
+
+        db_table = 'branch'
+        verbose_name = 'branch'
+        verbose_name_plural = 'branches'
+
+    def __str__(self) -> str:
+        return self.name_branch
+
 CHOICES_WITHDRAWAL = [
     ("Retiro en Tienda", "Retiro en Tienda"),
     ("Envio a Domicilio", "Envio a Domicilio")
@@ -69,9 +85,9 @@ class Order(models.Model):
     withdrawal = models.CharField(max_length=20, choices=CHOICES_WITHDRAWAL)
     direction = models.CharField(max_length=100)
     num_department = models.PositiveSmallIntegerField(blank=True, null=True)
-    id_commune = models.ForeignKey(Commune, on_delete=models.CASCADE)
+    id_commune = models.ForeignKey(Commune, on_delete=models.SET_NULL, blank=True, null=True)
+    id_branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, blank=True, null=True)
     id_voucher = models.ForeignKey(Voucher, on_delete=models.CASCADE)
-    id_user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:
 

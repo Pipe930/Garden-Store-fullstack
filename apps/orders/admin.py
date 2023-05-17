@@ -1,12 +1,19 @@
 from django.contrib import admin
-from .models import Order, Region, Province, Commune
+from .models import Order, Region, Province, Commune, Branch
 
 # Register models for panel control
+
+@admin.register(Branch)
+class BranchAdmin(admin.ModelAdmin):
+
+    list_display = ["name_branch", "razon_social"]
+    list_filter = ["name_branch"]
+    ordering = ("name_branch",)
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
 
-    list_display = ["id_user", "condition", "withdrawal", "direction", "num_department"]
+    list_display = ["condition", "withdrawal", "direction", "num_department"]
     list_filter = ["created"]
     ordering = ("created",)
 

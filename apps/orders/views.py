@@ -1,7 +1,7 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
-from .models import Order, Region, Province, Commune
-from .serializer import OrderSerializer, RegionSerializer, ProvinceSerializer, CommuneSerializer
+from .models import Order, Region, Province, Commune, Branch
+from .serializer import OrderSerializer, RegionSerializer, ProvinceSerializer, CommuneSerializer, BranchSerializer
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
@@ -110,3 +110,20 @@ class ListCommunesView(generics.ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
 
         return Response({"communes": serializer.data}, status.HTTP_200_OK)
+
+class ListBranchView(generics.ListAPIView):
+
+    queryset = Branch.objects.all()
+    serializer_class = BranchSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        if len(serializer.data):
+
+            return Response({"branches": serializer.data}, status.HTTP_200_OK)
+
+        return Response({"message": "No tenemos sucursales registradas"}, status.HTTP_204_NO_CONTENT)

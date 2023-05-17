@@ -9,6 +9,7 @@ urlsOrders = [
     path("regions/", views.ListRegionsView.as_view()),
     path("provinces/<int:id>", views.ListProvincesView.as_view()),
     path("communes/<int:id>", views.ListCommunesView.as_view()),
+    path("branches/", views.ListBranchView.as_view())
 ]
 
 urlsOrders = format_suffix_patterns(urlsOrders)

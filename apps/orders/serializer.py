@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, Region, Province, Commune
+from .models import Order, Region, Province, Commune, Branch
 from uuid import uuid4
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -35,3 +35,10 @@ class CommuneSerializer(serializers.ModelSerializer):
 
         model = Commune
         fields = ["id", "name_commune"]
+
+class BranchSerializer(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = Branch
+        fields = ["id", "name_branch"]
