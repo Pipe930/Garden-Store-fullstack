@@ -33,8 +33,6 @@ export class ProductComponent implements OnInit {
       this.product = resultado;
       this.stockPorduct = resultado.stock;
       this.idProduct = resultado.id;
-
-      console.log(resultado.price);
     }, error => {
       console.log(error);
     });

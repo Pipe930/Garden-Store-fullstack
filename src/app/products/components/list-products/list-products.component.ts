@@ -10,11 +10,11 @@ import { Product } from '../../modules/product';
 export class ListProductsComponent {
 
   public listFilter: any;
-  public listProducts: Array<Product> = [];
   public name: string = "";
-  public filterActivate: boolean = false;
   public activeList: boolean = true;
   public isNavOpen: boolean = false;
+  public page: number = 0;
+  public numbrePage: number = 1;
 
   constructor(
     private service: ProductService
@@ -23,28 +23,32 @@ export class ListProductsComponent {
   ngOnInit(): void {
     this.service.getCategories();
     this.service.getProducts();
-
-    this.service.listProducts$.subscribe(restult => {
-        this.listProducts = restult;
-      })
-
   }
 
   public toggleNav():void {
     this.isNavOpen = !this.isNavOpen;
   }
 
-  public loadMoreProducts():void{
-    this.service.getMoreProducts();
-  }
-
   public search(event: Event):void {
+    this.page = 0;
     const element = event.target as HTMLInputElement;
     this.name = element.value;
   }
 
   get servicio(){
     return this.service;
+  }
+
+  public nextPage():void{
+    this.page += 10;
+    this.numbrePage += 1;
+  }
+
+  public prevPage():void{
+    if(this.page > 0){
+      this.page -= 10;
+      this.numbrePage -= 1;
+    }
   }
 
   public filter(event: Event):void {
@@ -60,8 +64,4 @@ export class ListProductsComponent {
     })
   }
 
-  public activateFilter():void {
-    this.filterActivate = !this.filterActivate;
-    this.activeList = !this.activeList;
-  }
 }

@@ -46,7 +46,7 @@ class CategoryDetailView(generics.RetrieveAPIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 # View that list all products
-class ListProductsView(generics.ListAPIView):
+class ListProductsPageView(generics.ListAPIView):
 
 
     queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by("name_product")
@@ -62,6 +62,22 @@ class ListProductsView(generics.ListAPIView):
 
         if len(serializer.data): # Is the list empty?
             return self.get_paginated_response(serializer.data)
+
+        return Response({"message": "No tenemos productos registrados"}, status.HTTP_204_NO_CONTENT)
+
+class ListProductsView(generics.ListAPIView):
+
+    queryset = Product.objects.filter(condition=True, id_offer__isnull= True).order_by("name_product")
+    serializer_class = ProductSerializer
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+
+        queryset = self.get_queryset() # get queryset
+        serializer = self.get_serializer(queryset, many=True) # The data is serialized
+
+        if len(serializer.data): # Is the list empty?
+            return Response(serializer.data, status.HTTP_200_OK)
 
         return Response({"message": "No tenemos productos registrados"}, status.HTTP_204_NO_CONTENT)
 

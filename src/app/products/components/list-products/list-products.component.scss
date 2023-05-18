@@ -12,6 +12,7 @@
   }
 
   #searchproduct{
+
     padding: 10px;
     width: 30%;
     border-radius: 10px;
@@ -20,6 +21,7 @@
   }
 
   .select-form{
+
     margin-left: 5px;
     padding: 10px;
     border-radius: 10px;
@@ -29,7 +31,9 @@
 }
 
 @media screen and (max-width: 910px) {
+
   .continaer-search{
+
     #searchproduct{
       width: 100%;
     }
@@ -37,6 +41,7 @@
 }
 
 .container-list{
+
   display: flex;
   justify-content: space-around;
   margin: 40px auto;
@@ -56,6 +61,7 @@
   }
 
   .sidenav {
+
     height: 100%;
     width: 200px;
     position: fixed;
@@ -69,6 +75,7 @@
     text-align: right;
 
     a {
+
       padding: 8px 8px 8px 32px;
       text-decoration: none;
       font-size: 25px;
@@ -83,6 +90,7 @@
     }
 
     .btn-close-sidenav{
+
       background-color: #111;
       border: none;
       color: #f1f1f1;
@@ -90,6 +98,7 @@
     }
 
     .container-filter{
+
       text-align: center;
       h2{
         color: #f1f1f1;
@@ -114,6 +123,7 @@
     width: 100%;
 
     .title{
+
       text-align: center;
       padding: 2rem 0;
       margin-top: 10px;
@@ -130,6 +140,7 @@
       flex-wrap: wrap;
 
       .product{
+
         width: 100%;
         max-width: 350px;
         margin: 40px 20px;
@@ -141,6 +152,7 @@
         .header-product{
 
           img{
+
             width: 100%;
             height: 20rem;
 
@@ -148,10 +160,12 @@
 
         }
         .body-product{
+
           padding: 15px;
           text-align: center;
 
           h2{
+
             padding: 0 0 15px 0;
             font-size: 22px;
             font-weight: 900;
@@ -159,12 +173,14 @@
           }
 
           ul{
+
             list-style: none;
             text-align: left;
 
           }
 
           button{
+
             margin: 15px 0 10px 0;
             padding: 7px 35px;
             border-radius: 10px;
@@ -177,12 +193,39 @@
           }
 
           button:hover{
+
               background-color: #3C9AFE;
               color: #FFFFFF;
               transition: all 0.3s;
 
           }
         }
+      }
+    }
+    .container-btns{
+
+      text-align: center;
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      margin: 0 300px 40px 300px;
+
+      .btns-pages{
+
+        padding: 8px 20px;
+        background: #45B39D;
+        border: none;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        color: #FDFEFE;
+
+      }
+
+      .btns-pages:hover{
+
+        background-color: #138D75;
+        transition: 0.3s;
       }
     }
   }
@@ -192,6 +235,7 @@
   .continaer-search{
     .container-btn-sidenav{
       .btn-open-sidenav{
+
         display: block;
         border: none;
         background: #FFFFFF;
@@ -204,10 +248,12 @@
   }
 
   .container-list{
+
     margin-left: 0;
     width: 100%;
 
     .sidenav-filters{
+
       display: none;
       margin: 0;
       padding: 0;
@@ -215,6 +261,7 @@
     }
 
     .container-title{
+
       background-color: transparent;
       border: none;
       position: relative;
@@ -222,6 +269,7 @@
       z-index: 0;
 
       .title{
+
         padding: 0;
       }
 

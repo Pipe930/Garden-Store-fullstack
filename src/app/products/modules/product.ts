@@ -14,8 +14,8 @@ export interface Product {
   description: string;
   condition: boolean;
   create: string;
-  idCategory: number;
-  idOffer: offer;
+  id_category: number;
+  id_offer: offer;
 }
 
 export interface ResponseProducts {
