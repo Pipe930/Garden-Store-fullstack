@@ -283,7 +283,7 @@ class ChangePasswordView(generics.UpdateAPIView):
             response = {
                 "status": "success",
                 "code": status.HTTP_200_OK,
-                "message": "Contraseña actualizada con exito",
+                "message": "Contraseña cambiada con exito",
                 "data": []
             }
 
