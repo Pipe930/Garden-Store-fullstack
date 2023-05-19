@@ -30,7 +30,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Subscription
-        fields = ("username", "email", "amount", "idUser")
+        fields = ("username", "email", "mount", "id_user")
 
     def create(self, validated_data):
 
@@ -45,6 +45,7 @@ class MessageSerializer(serializers.Serializer):
     email = serializers.EmailField()
     message = serializers.CharField(max_length=255)
 
+# Change Password Serializer
 class ChangePasswordSerializer(serializers.Serializer):
     model = User
 

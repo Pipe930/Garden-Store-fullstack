@@ -166,6 +166,10 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated'
+    ],
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser'
@@ -192,8 +196,9 @@ EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
 if not DEBUG:
     DEFAULT_FROM_EMAIL = 'Garden Store - Store Shopping Academia <mail@gmail.com>'
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST= env('EMAIL_HOST')
-    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-    EMAIL_PORT = env('EMAIL_PORT')
-    EMAIL_USE_TLS = env('EMAIL_USE_TLS')
+    EMAIL_HOST = os.environ.get("EMAIL_HOST")
+    EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+    EMAIL_PORT = int(os.environ.get("EMAIL_PORT"))
+    EMAIL_USE_TLS = bool(os.environ.get("EMAIL_USE_TLS"))
+    EMAIL_USE_SSL = bool(os.environ.get("EMAIL_USE_SSL"))

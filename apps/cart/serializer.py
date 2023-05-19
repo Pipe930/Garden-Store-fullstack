@@ -61,7 +61,7 @@ class CartItemsSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = CartItems
-        fields = ("product", "quantity", "price")
+        fields = ["product", "quantity", "price"]
 
     # Method to calculate the total price
     def total(self, cartItem: CartItems):
@@ -84,7 +84,7 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
 
         model = Cart
-        fields = ("id", "items", "total", "id_user")
+        fields = ["id", "items", "total", "id_user"]
 
     def main_total(self, cart: Cart):
 

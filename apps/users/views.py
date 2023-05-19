@@ -3,7 +3,7 @@ from rest_framework import status, generics
 from django.http import Http404
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from django.contrib.auth import authenticate, login, logout
 from .models import User, Subscription
@@ -153,28 +153,21 @@ class LogoutView(generics.RetrieveAPIView):
         except:
             return Response({"errors": "El token no se a encontrado en la cabecera"}, status.HTTP_409_CONFLICT)
 
-# View that creates and lists subscriptions
-class ListSubscriptionView(generics.ListAPIView):
-
-    serializer_class = SubscriptionSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
-    authentication_classes = [TokenAuthentication]
-    queryset = Subscription.objects.all()
-
-    # Petition GET
-    def get(self, request):
-
-        queryset = self.get_queryset() # get queryset
-        serializer = self.get_serializer(queryset, many=True) # The data is serialized
-
-        return Response({"subscriptions": serializer.data}, status.HTTP_200_OK)
-
 class CreateSubscriptionView(generics.CreateAPIView):
 
     parser_classes = [JSONParser]
-    permission_classes = [IsAuthenticated, IsAdminUser]
+    permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     serializer_class = SubscriptionSerializer
+
+    def get_object(self, id_user:int):
+
+        try:
+            user = User.objects.get(id=id_user)
+        except User.DoesNotExist:
+            raise Http404
+
+        return user
 
     # Petition POST
     def post(self, request, format=None):
@@ -183,16 +176,25 @@ class CreateSubscriptionView(generics.CreateAPIView):
 
         if serializer.is_valid(): # Validation of received data
 
-            serializer.save() # The data is save
-            return Response(
-                {
-                    "data": serializer.data,
-                    "message": "Subscripcion Creada con Exito"
-                },
-                status.HTTP_201_CREATED)
+            id_user = request.data["id_user"]
+            email = request.data["email"]
+            username = request.data["username"]
+
+            user = self.get_object(id_user)
+
+            if user.username == username and user.email == email:
+
+                serializer.save() # The data is save
+                return Response(
+                    {
+                        "data": serializer.data,
+                        "message": "Subscripcion Creada con Exito"
+                    },
+                    status.HTTP_201_CREATED)
+
+            return Response({"message": "El email o nombre de usuario no son correctos"}, status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-
 
 # View that gets a subscription by id
 class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
@@ -202,9 +204,9 @@ class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
     authentication_classes = [TokenAuthentication]
 
     # Get the object by id
-    def get_object(self, id:int):
+    def get_object(self, idUser:int):
         try:
-            subscription = Subscription.objects.get(id=id) # Queryset
+            subscription = Subscription.objects.get(id_user=idUser) # Queryset
         except Subscription.DoesNotExist:
             # If it does not exist, it returns a 404 message
             raise Http404
@@ -212,20 +214,20 @@ class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
         return subscription
 
     # Petition GET
-    def get(self, request, id:int, format=None):
+    def get(self, request, idUser:int, format=None):
 
-        subcription = self.get_object(id) # Object
+        subcription = self.get_object(idUser) # Object
         serializer = self.get_serializer(subcription) # Serializer data
 
         return Response(serializer.data, status.HTTP_200_OK)
 
     # Petition DELETE
-    def delete(self, request, id:int, format=None):
+    def delete(self, request, idUser:int, format=None):
 
-        subscription = self.get_object(id) # Object
+        subscription = self.get_object(idUser) # Object
         subscription.delete() # Delete a Object subscription
 
-        return Response(status.HTTP_204_NO_CONTENT)
+        return Response({"message": "La subscripcion se elimino correctamente"},status.HTTP_204_NO_CONTENT)
 
 # View for mailing
 class SendEmailView(generics.CreateAPIView):

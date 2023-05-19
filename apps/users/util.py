@@ -1,4 +1,5 @@
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.conf import settings
 
 # Util class
 class Util:
@@ -6,5 +7,6 @@ class Util:
     # static method send email
     @staticmethod
     def send_email(data):
-        email = EmailMessage(subject=data["full_name"], body=data["message"], to=[data["email"]])
-        email.send() # send email
+        EmailMultiAlternatives()
+        email = EmailMessage(data["full_name"], data["message"], "settings.EMAIL_HOST_USER", [data["email"]])
+        email.send(fail_silently=False) # send email
