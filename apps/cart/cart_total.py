@@ -33,3 +33,34 @@ def calculate_total_price(items) -> int:
         total_price += item.quantity * price
 
     return total_price
+
+def calculate_total_quality(id_cart):
+
+    cart = Cart.objects.get(id=id_cart)
+
+    items = cart.items.all()
+
+    total_quantity = 0
+
+    for item in items:
+        total_quantity += item.quantity
+
+    cart.total_quantity = total_quantity
+    cart.save()
+
+    return total_quantity
+
+def calculate_total_products(id_cart):
+
+    cart = Cart.objects.get(id=id_cart)
+
+    items = cart.items.all()
+
+    quality_products = 0
+    for item in items:
+        quality_products += 1
+
+    cart.total_products = quality_products
+    cart.save()
+
+    return quality_products

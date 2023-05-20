@@ -3,7 +3,7 @@ from .models import Cart, CartItems, Voucher
 from apps.products.models import Product
 from django.http import Http404
 from apps.products.discount import discount
-from .cart_total import calculate_total_price, cart_total
+from .cart_total import calculate_total_price, cart_total, calculate_total_quality, calculate_total_products
 from .discount_stock import DiscountStock
 
 class VoucherSerializer(serializers.ModelSerializer):
@@ -15,26 +15,30 @@ class VoucherSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
 
-        id_cart = validated_data["id_cart"]
+        id_user = self.validated_data["id_user"]
+
+        cart = obtain_cart_user(id_user)
 
         discount_stock = DiscountStock() # We instantiate the object DiscountStock
 
-        discount_stock.discount_stock_product(id_cart)
+        discount_stock.discount_stock_product(cart.id)
 
         voucher = Voucher.objects.create(**validated_data)
 
-        discount_stock.clean_cart(id_cart)
+        discount_stock.clean_cart(cart.id)
 
-        cart_total(id_cart)
+        cart_total(cart)
 
         return voucher
 
 class CancelVoucherSerializer(serializers.ModelSerializer):
 
+    id_user = serializers.CharField()
+
     class Meta:
 
         model = Voucher
-        fields = ["state"]
+        fields = ["state", "id_user"]
 
     def update(self, instance, validated_data):
 
@@ -80,11 +84,25 @@ class CartSerializer(serializers.ModelSerializer):
 
     items = CartItemsSerializer(many=True, read_only=True)
     total = serializers.SerializerMethodField(method_name="main_total")
+    total_quantity = serializers.SerializerMethodField(method_name="calculate_total_quantity")
+    total_products = serializers.SerializerMethodField(method_name="calculate_total_products")
 
     class Meta:
 
         model = Cart
-        fields = ["id", "items", "total", "id_user"]
+        fields = ["id", "items", "total", "id_user", "total_quantity", "total_products"]
+
+    def calculate_total_quantity(self, cart: Cart):
+
+        total_quantity = calculate_total_quality(cart.id)
+
+        return total_quantity
+
+    def calculate_total_products(self, cart: Cart):
+
+        quality_products = calculate_total_products(cart.id)
+
+        return quality_products
 
     def main_total(self, cart: Cart):
 
@@ -100,16 +118,25 @@ class CartSerializer(serializers.ModelSerializer):
 # Add Cart serializer
 class AddCartItemSerializer(serializers.ModelSerializer):
 
+    id_user = serializers.IntegerField()
+
     class Meta:
 
         model = CartItems
-        fields = ["product", "quantity", "id_cart"]
+        fields = ["product", "quantity", "id_user"]
 
     def save(self, **kwargs):
 
         product = self.validated_data["product"]
         quantity = self.validated_data["quantity"]
-        id_cart = self.validated_data["id_cart"]
+        id_user = self.validated_data["id_user"]
+
+        cart = obtain_cart_user(id_user)
+
+        if cart is None:
+            raise Http404
+
+        id_cart = cart.id
 
         try:
 
@@ -122,7 +149,9 @@ class AddCartItemSerializer(serializers.ModelSerializer):
 
                 cartitem.save()
 
-                cart_total(id_cart)
+                cart_total(cart)
+                calculate_total_quality(cart.id)
+                calculate_total_products(cart.id)
 
                 self.instance = cartitem
 
@@ -136,26 +165,38 @@ class AddCartItemSerializer(serializers.ModelSerializer):
 
                 self.instance = CartItems.objects.create(
                     product=product,
-                    id_cart=id_cart,
+                    id_cart=cart,
                     quantity=quantity,
                     price=newPrice
                     )
 
-                cart_total(id_cart)
+                cart_total(cart)
+                calculate_total_products(cart.id)
+                calculate_total_quality(cart.id)
 
         return self.instance
 
 # Substract Cart serializer
 class SubtractCartItemSerializer(serializers.ModelSerializer):
 
+    id_user = serializers.IntegerField()
+
     class Meta:
         model = CartItems
-        fields = ["product", "id_cart"]
+        fields = ["product", "id_user"]
 
     def save(self, **kwargs):
         try:
+
             product = self.validated_data["product"]
-            id_cart = self.validated_data["id_cart"]
+            id_user = self.validated_data["id_user"]
+
+            cart = obtain_cart_user(id_user)
+
+            if cart is None:
+              raise Http404
+
+            id_cart = cart.id
 
         except KeyError:
             raise Http404
@@ -173,5 +214,16 @@ class SubtractCartItemSerializer(serializers.ModelSerializer):
         cartitem.save()
 
         cart_total(cartitem.id_cart)
+        calculate_total_products(cartitem.id_cart.id)
+        calculate_total_quality(cartitem.id_cart.id)
 
         return self.instance
+
+def obtain_cart_user(id_user:int):
+
+    try:
+        cart_user = Cart.objects.get(id_user=id_user)
+    except Cart.DoesNotExist:
+        return None
+
+    return cart_user

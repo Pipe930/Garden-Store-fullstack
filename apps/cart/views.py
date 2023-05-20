@@ -1,12 +1,27 @@
 from rest_framework import status, generics
 from rest_framework.response import Response
 from .models import Cart, CartItems, Voucher
+from rest_framework.authtoken.models import Token
 from apps.products.models import Product
 from django.http import Http404
 from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, VoucherSerializer, CancelVoucherSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.parsers import JSONParser
+from .cart_total import calculate_total_quality, calculate_total_products, cart_total
+from rest_framework.authentication import get_authorization_header
+
+def token_validated(request, idUser:int):
+
+    token = get_authorization_header(request).split()
+    token = token[1].decode()
+
+    tokenDB = Token.objects.get(key = token)
+
+    if tokenDB.user.id == idUser:
+        return True
+
+    return False
 
 class CartUserView(generics.RetrieveAPIView):
 
@@ -25,6 +40,9 @@ class CartUserView(generics.RetrieveAPIView):
         return cart
 
     def get(self, request, idUser:int, format=None):
+
+        if not token_validated(request, idUser):
+            return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
 
         cart = self.get_object(idUser)
 
@@ -71,6 +89,9 @@ class AddCartItemView(generics.CreateAPIView):
 
             data = serializer.data
 
+            if not token_validated(request, data["id_user"]):
+                return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
+
             product = self.get_object(data["product"])
 
             quantity = data["quantity"]
@@ -96,6 +117,11 @@ class SubtractCartItemView(generics.CreateAPIView):
 
         if serializer.is_valid():
 
+            data = serializer.data
+
+            if not token_validated(request, data["id_user"]):
+                return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
+
             serializer.save()
 
             return Response({"message": "Se resto el producto"}, status.HTTP_200_OK)
@@ -111,13 +137,16 @@ class ClearCartItemsView(generics.DestroyAPIView):
     def get_object(self, id:int):
 
         try:
-            cart = Cart.objects.get(id=id)
+            cart = Cart.objects.get(id_user=id)
         except Cart.DoesNotExist:
             raise Http404
 
         return cart
 
     def delete(self, request, id:int, format=None):
+
+        if not token_validated(request, id):
+            return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
 
         cart = self.get_object(id)
 
@@ -127,6 +156,10 @@ class ClearCartItemsView(generics.DestroyAPIView):
 
             for item in items:
                 item.delete()
+
+            cart_total(cart)
+            calculate_total_products(cart.id)
+            calculate_total_quality(cart.id)
 
             return Response({"message": "El carrito se a limpiado con exito"}, status.HTTP_204_NO_CONTENT)
 
@@ -141,6 +174,9 @@ class CreateVoucherView(generics.CreateAPIView):
     serializer_class = VoucherSerializer
 
     def post(self, request):
+
+        if not token_validated(request, request.data["id_user"]):
+            return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
 
         serializer = self.get_serializer(data=request.data)
 
@@ -178,6 +214,11 @@ class CancelPurchaseView(generics.UpdateAPIView):
 
         if serializer.is_valid():
 
+            data = serializer.data
+
+            if not token_validated(request, data["id_user"]):
+                return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
+
             products = voucher.products
             items = products["items"]
 
@@ -204,6 +245,9 @@ class ListVouchersView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, id:int, format=None):
+
+        if not token_validated(request, id):
+            return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
 
         queryset = Voucher.objects.filter(id_user=id, state=True).order_by("created")
         serializer = self.get_serializer(queryset, many=True)

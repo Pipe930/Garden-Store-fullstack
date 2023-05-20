@@ -17,6 +17,7 @@ from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from rest_framework.parsers import JSONParser
+from apps.cart.views import token_validated
 
 # View that the user registers in the system
 class RegisterUserView(generics.CreateAPIView):
@@ -86,6 +87,15 @@ class LoginView(ObtainAuthToken):
                         }
 
                         return Response(userJson, status.HTTP_200_OK) # Response
+
+                    all_sesion = Session.objects.filter(expire_date__gte = datetime.now())
+                    if all_sesion.exists(): # Is there an active session?
+
+                        for session in all_sesion:
+                            session_data = session.get_decoded() # Decode the session
+
+                            if user.id == int(session_data.get("_auth_user_id")): # Is there an active session with this user?
+                                session.delete() # delete session
 
                     # If there is not token
                     token.delete() # Remove Token
@@ -182,6 +192,9 @@ class CreateSubscriptionView(generics.CreateAPIView):
 
             user = self.get_object(id_user)
 
+            if not token_validated(request, id_user):
+                return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
+
             if user.username == username and user.email == email:
 
                 serializer.save() # The data is save
@@ -216,6 +229,9 @@ class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
     # Petition GET
     def get(self, request, idUser:int, format=None):
 
+        if not token_validated(request, idUser):
+            return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
+
         subcription = self.get_object(idUser) # Object
         serializer = self.get_serializer(subcription) # Serializer data
 
@@ -223,6 +239,9 @@ class SubscriptionDetailView(generics.RetrieveDestroyAPIView):
 
     # Petition DELETE
     def delete(self, request, idUser:int, format=None):
+
+        if not token_validated(request, idUser):
+            return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
 
         subscription = self.get_object(idUser) # Object
         subscription.delete() # Delete a Object subscription

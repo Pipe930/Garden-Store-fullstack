@@ -7,7 +7,9 @@ class Cart(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     total = models.PositiveIntegerField(default=0)
-    id_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    total_quantity = models.PositiveIntegerField(default=0)
+    total_products = models.PositiveIntegerField(default=0)
+    id_user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     class Meta:
 
