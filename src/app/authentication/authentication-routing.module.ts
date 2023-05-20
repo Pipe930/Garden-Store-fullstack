@@ -5,6 +5,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
+import { SesionRequiredGuard } from '../guards/sesion-required.guard';
 
 const routes: Routes = [
   {
@@ -17,7 +18,8 @@ const routes: Routes = [
   },
   {
     path: "profile/:username",
-    component: ProfileComponent
+    component: ProfileComponent,
+    canActivate: [SesionRequiredGuard]
   },
   {
     path: "reset-password",

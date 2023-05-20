@@ -62,7 +62,7 @@ export class ProductComponent implements OnInit {
       const product = {
         product: this.idProduct,
         quantity: this.quality,
-        id_cart: user.idCart,
+        id_user: user.user_id,
         price: this.product.price
       }
 

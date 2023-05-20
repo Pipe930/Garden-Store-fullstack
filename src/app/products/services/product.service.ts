@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 })
 export class ProductService {
 
-  private url: string = "http://127.0.0.1:8000/api/v1/products/";
+  private url: string = "http://192.168.1.11:8000/api/v1/products/";
 
   public listProducts: Array<Product> = [];
   public activateMessage: boolean = true;
@@ -39,7 +39,7 @@ export class ProductService {
   }
 
   public getCategories():void{
-    this.http.get<Array<Category>>('http://127.0.0.1:8000/api/v1/categories/').subscribe(resultado => {
+    this.http.get<Array<Category>>('http://192.168.1.11:8000/api/v1/categories/').subscribe(resultado => {
       this.listCategories = resultado;
     }, error => {
       console.log(error);

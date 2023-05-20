@@ -1,5 +1,5 @@
 export interface AddCart {
   product: number;
-  id_cart:number;
+  id_user:number;
   quantity: number;
 }

@@ -11,9 +11,11 @@ export class ComponentCartComponent {
   public items: Array<any> = [];
   public cart: Cart =  {
     id: 0,
-    idUser: 0,
+    id_user: 0,
     items: [],
-    total: 0
+    total: 0,
+    total_quantity: 0,
+    total_products: 0
   };
 
   public user = JSON.parse(sessionStorage.getItem('user')!);
@@ -37,6 +39,7 @@ export class ComponentCartComponent {
         this.items = result.items;
 
         this.cart = result;
+        console.log(result);
       }, error => {
         console.log(error);
       });
@@ -47,7 +50,7 @@ export class ComponentCartComponent {
 
     const json = {
       product: productid,
-      id_cart: this.cart.id
+      id_user: this.user.user_id
 
     }
 
@@ -61,7 +64,7 @@ export class ComponentCartComponent {
     const json = {
       product: productid,
       quantity: 1,
-      id_cart: this.cart.id
+      id_user: this.user.user_id
     }
 
     this.service.cartSum(json);
@@ -70,9 +73,9 @@ export class ComponentCartComponent {
 
   }
 
-  public clearCart(id_cart: number):void{
+  public clearCart():void{
 
-    this.service.cartClear(id_cart);
+    this.service.cartClear(this.user.user_id);
 
     window.location.reload();
   }

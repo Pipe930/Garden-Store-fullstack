@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class CartService {
 
-  public urlCart: string = 'http://127.0.0.1:8000/api/v1/cart/';
+  public urlCart: string = 'http://192.168.1.11:8000/api/v1/cart/';
 
   constructor(
     private http: HttpClient,
