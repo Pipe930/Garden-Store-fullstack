@@ -82,8 +82,7 @@ class LoginView(ObtainAuthToken):
                             "username": user.username,
                             "user_id": user.id,
                             "activate": user.is_active,
-                            "staff": user.is_staff,
-                            "idCart": cart.id
+                            "staff": user.is_staff
                         }
 
                         return Response(userJson, status.HTTP_200_OK) # Response
@@ -107,8 +106,7 @@ class LoginView(ObtainAuthToken):
                         "username": user.username,
                         "user_id": user.id,
                         "activate": user.is_active,
-                        "staff": user.is_staff,
-                        "idCart": cart.id
+                        "staff": user.is_staff
                     }
 
                     return Response(userJson, status.HTTP_200_OK) # Response

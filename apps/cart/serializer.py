@@ -207,7 +207,14 @@ class SubtractCartItemSerializer(serializers.ModelSerializer):
             raise Http404
 
         if cartitem.quantity == 1:
+
             cartitem.delete()
+
+            cart_total(cartitem.id_cart)
+            calculate_total_products(cartitem.id_cart.id)
+            calculate_total_quality(cartitem.id_cart.id)
+
+            return self.instance
 
         cartitem.quantity -= 1
         cartitem.price = cartitem.quantity * cartitem.product.price
