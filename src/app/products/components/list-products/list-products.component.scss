@@ -50,13 +50,38 @@
   .sidenav-filters{
 
     text-align: center;
-    padding: 0 40px;
+    padding: 0 20px;
     background-color: #FDFEFE;
     border: 1px solid #D5D8DC;
     border-radius: 10px;
 
     h2{
       margin: 1.65rem 0;
+    }
+
+    .contianer-categories{
+      width: 100%;
+      .category{
+
+        font-size: 15px;
+        text-align: left;
+        padding: 6px 0;
+        margin-bottom: 4px;
+        border-bottom: 2px solid #EAECEE;
+        color: #111;
+        cursor: pointer;
+
+        a{
+          text-decoration: none;
+          color: #F1948A;
+        }
+
+        a:hover{
+          color: #E74C3C;
+          transition: 0.3s;
+        }
+
+      }
     }
   }
 
@@ -78,7 +103,7 @@
 
       padding: 8px 8px 8px 32px;
       text-decoration: none;
-      font-size: 25px;
+      font-size: 15px;
       color: #818181;
       display: block;
       transition: .3s;

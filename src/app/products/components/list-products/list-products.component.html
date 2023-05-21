@@ -13,25 +13,17 @@
   id="searchproduct"
   (keyup)="search($event)"
   >
-  <!-- <div class="container-check">
-    <label for="" class="text-check">Filter</label>
-    <div class="check-box">
-      <input type="checkbox" name="" id="btn-switch" (click)="activateFilter()">
-      <label for="btn-switch" class="label-switch"></label>
-    </div>
-  </div>
-  <select name="" id="" class="select-form" *ngIf="filterActivate" (change)="filter($event)">
-    <option *ngFor="let category of servicio.listCategories" [value]="category.id">{{category.name_category}}</option>
-  </select> -->
 </div>
 
 <div class="container-list">
 
   <aside class="sidenav-filters">
-    <h2>Filters</h2>
-    <select name="" id="" class="select-form" (change)="filter($event)">
-      <option *ngFor="let category of servicio.listCategories" [value]="category.id">{{category.name_category}}</option>
-    </select>
+    <h2>Categorias</h2>
+    <div class="contianer-categories">
+      <div class="category" *ngFor="let category of servicio.listCategories">
+        <a>{{category.name_category}}</a>
+      </div>
+    </div>
   </aside>
 
   <div class="sidenav" [class.sidenav-open]="isNavOpen">
@@ -41,11 +33,12 @@
       </svg>
     </button>
     <div class="container-filter">
-      <h2>Filters</h2>
-      <select name="" id="" class="select-form" (change)="filter($event)">
-        <option value="">Opcion</option>
-        <option *ngFor="let category of servicio.listCategories" [value]="category.id">{{category.name_category}}</option>
-      </select>
+      <h2>Categorias</h2>
+      <div class="contianer-categories">
+        <div class="category" *ngFor="let category of servicio.listCategories">
+          <a>{{category.name_category}}</a>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -9,7 +9,6 @@ export interface LoginResponse {
   user_id: string;
   active: boolean;
   staff: boolean;
-  idCart: number;
 }
 
 export interface ResetPassword {

@@ -51,17 +51,17 @@ export class ListProductsComponent {
     }
   }
 
-  public filter(event: Event):void {
-    const element = event.target as HTMLSelectElement;
-    this.service.filterProduct(
-      element.value
-      ).subscribe(result => {
-        if(result){
-          this.listFilter = result;
-        }
-    }, error => {
-      console.log(error);
-    })
-  }
+  // public filter(event: Event):void {
+  //   const element = event.target as HTMLSelectElement;
+  //   this.service.filterProduct(
+  //     element.value
+  //     ).subscribe(result => {
+  //       if(result){
+  //         this.listFilter = result;
+  //       }
+  //   }, error => {
+  //     console.log(error);
+  //   })
+  // }
 
 }
