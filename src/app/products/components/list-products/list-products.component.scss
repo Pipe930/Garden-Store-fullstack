@@ -1,9 +1,23 @@
+$paddingSearch: 10px;
+$maxWithSearch: 910px;
+
 .continaer-search{
 
   padding: 15px 20px;
   background-color: #9bc0ff;
   align-items: center;
   display: flex;
+
+  .btn-search{
+
+    padding: 0.590rem 0.7rem;
+    border: none;
+    background-color: #5DADE2;
+    color: #FDFEFE;
+    cursor: pointer;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+  }
 
   .container-btn-sidenav{
     .btn-open-sidenav{
@@ -13,11 +27,12 @@
 
   #searchproduct{
 
-    padding: 10px;
+    padding: $paddingSearch;
     width: 30%;
-    border-radius: 10px;
     font-size: 17px;
     border: none;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
   }
 
   .select-form{
@@ -47,7 +62,7 @@
   margin: 40px auto;
   width: 90%;
 
-  .sidenav-filters{
+  .sidenav-categories{
 
     text-align: center;
     padding: 0 20px;
@@ -61,6 +76,26 @@
 
     .contianer-categories{
       width: 100%;
+
+      .btn-none-filter{
+
+        width: 100%;
+        margin-bottom: 16px;
+        padding: 6px 0;
+        border: 2px solid #F1948A;
+        background-color: #FDFEFE;
+        color: #F1948A;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .btn-none-filter:hover{
+
+        background-color: #F1948A;
+        color: #FDFEFE;
+        transition: all 0.3s;
+      }
+
       .category{
 
         font-size: 15px;
@@ -261,6 +296,7 @@
 }
 
 @media screen and (max-width: 760px) {
+
   .continaer-search{
     .container-btn-sidenav{
       .btn-open-sidenav{
@@ -281,7 +317,7 @@
     margin-left: 0;
     width: 100%;
 
-    .sidenav-filters{
+    .sidenav-categories{
 
       display: none;
       margin: 0;

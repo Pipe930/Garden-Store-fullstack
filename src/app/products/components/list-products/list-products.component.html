@@ -11,17 +11,26 @@
   type="search"
   placeholder="buscar..."
   id="searchproduct"
-  (keyup)="search($event)"
+  #searchInput
+  (change)="search(searchInput.value)"
   >
+  <button type="button" class="btn-search" (click)="search(searchInput.value)">
+    <i class="icon-search">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+      </svg>
+    </i>
+  </button>
 </div>
 
 <div class="container-list">
 
-  <aside class="sidenav-filters">
+  <aside class="sidenav-categories">
     <h2>Categorias</h2>
     <div class="contianer-categories">
+      <button type="button" (click)="noneFilter()" class="btn-none-filter">Sin Filtro</button>
       <div class="category" *ngFor="let category of servicio.listCategories">
-        <a>{{category.name_category}}</a>
+        <a (click)="getCategory(category.name_category)">{{category.name_category}}</a>
       </div>
     </div>
   </aside>
@@ -36,7 +45,7 @@
       <h2>Categorias</h2>
       <div class="contianer-categories">
         <div class="category" *ngFor="let category of servicio.listCategories">
-          <a>{{category.name_category}}</a>
+          <a (click)="getCategory(category.name_category)">{{category.name_category}}</a>
         </div>
       </div>
     </div>
@@ -52,7 +61,7 @@
 
     <h2 class="message-title" *ngIf="servicio.activateMessage">No tenemos productos registrados</h2>
 
-    <article class="product" *ngFor="let product of servicio.listProducts | search:name:page">
+    <article class="product" *ngFor="let product of servicio.listProducts | search:name:page:category">
       <div class="header-product">
         <img [src]="product.image" alt="image product">
       </div>

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ProductService } from '../../services/product.service';
-import { Product } from '../../modules/product';
 
 @Component({
   selector: 'app-list-products',
@@ -15,6 +14,7 @@ export class ListProductsComponent {
   public isNavOpen: boolean = false;
   public page: number = 0;
   public numbrePage: number = 1;
+  public category: string = "";
 
   constructor(
     private service: ProductService
@@ -29,10 +29,16 @@ export class ListProductsComponent {
     this.isNavOpen = !this.isNavOpen;
   }
 
-  public search(event: Event):void {
+  // public search(event: Event):void {
+  //   this.page = 0;
+  //   const element = event.target as HTMLInputElement;
+  //   this.name = element.value;
+  // }
+
+  public search(name_product:string):void{
     this.page = 0;
-    const element = event.target as HTMLInputElement;
-    this.name = element.value;
+    this.name = name_product;
+    console.log(this.name);
   }
 
   get servicio(){
@@ -42,26 +48,32 @@ export class ListProductsComponent {
   public nextPage():void{
     this.page += 10;
     this.numbrePage += 1;
+    window.scrollTo({
+      top: 0
+    });
   }
 
   public prevPage():void{
     if(this.page > 0){
       this.page -= 10;
       this.numbrePage -= 1;
+      window.scrollTo({
+        top: 0
+      });
     }
   }
 
-  // public filter(event: Event):void {
-  //   const element = event.target as HTMLSelectElement;
-  //   this.service.filterProduct(
-  //     element.value
-  //     ).subscribe(result => {
-  //       if(result){
-  //         this.listFilter = result;
-  //       }
-  //   }, error => {
-  //     console.log(error);
-  //   })
-  // }
+  public getCategory(name_category: string):void{
+    this.category = name_category;
+  }
+
+  public noneFilter():void{
+    this.category = "";
+  }
+
+  public filter(event: Event):void {
+    const element = event.target as HTMLSelectElement;
+    this.category = element.value;
+  }
 
 }
