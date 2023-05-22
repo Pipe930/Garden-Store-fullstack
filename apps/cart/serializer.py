@@ -34,6 +34,7 @@ class VoucherSerializer(serializers.ModelSerializer):
 class CancelVoucherSerializer(serializers.ModelSerializer):
 
     id_user = serializers.CharField()
+    state = serializers.BooleanField()
 
     class Meta:
 
@@ -194,7 +195,7 @@ class SubtractCartItemSerializer(serializers.ModelSerializer):
             cart = obtain_cart_user(id_user)
 
             if cart is None:
-              raise Http404
+                raise Http404
 
             id_cart = cart.id
 

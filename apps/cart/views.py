@@ -175,12 +175,12 @@ class CreateVoucherView(generics.CreateAPIView):
 
     def post(self, request):
 
-        if not token_validated(request, request.data["id_user"]):
-            return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
-
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
+
+            if not token_validated(request, request.data["id_user"]):
+                return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
 
             serializer.save()
             return Response(
@@ -214,10 +214,16 @@ class CancelPurchaseView(generics.UpdateAPIView):
 
         if serializer.is_valid():
 
-            data = serializer.data
-
-            if not token_validated(request, data["id_user"]):
+            if not token_validated(request, request.data["id_user"]):
                 return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
+
+            data = serializer.validated_data
+
+            if data["state"]:
+                data["state"] = False
+
+            if not voucher.state:
+                return Response({"message": "Esta compra esta cancelada"}, status.HTTP_406_NOT_ACCEPTABLE)
 
             products = voucher.products
             items = products["items"]
