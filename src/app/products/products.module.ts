@@ -8,15 +8,13 @@ import { ListProductsComponent } from './components/list-products/list-products.
 import { SearchPipe } from './pipes/search.pipe';
 import { ProductService } from './services/product.service';
 import { ProductComponent } from './components/product/product.component';
-import { ProductOfferComponent } from './components/product-offer/product-offer.component';
 
 
 @NgModule({
   declarations: [
     ListProductsComponent,
     SearchPipe,
-    ProductComponent,
-    ProductOfferComponent
+    ProductComponent
   ],
   imports: [
     CommonModule,
