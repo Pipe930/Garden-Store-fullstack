@@ -29,12 +29,6 @@ export class ListProductsComponent {
     this.isNavOpen = !this.isNavOpen;
   }
 
-  // public search(event: Event):void {
-  //   this.page = 0;
-  //   const element = event.target as HTMLInputElement;
-  //   this.name = element.value;
-  // }
-
   public search(name_product:string):void{
     this.page = 0;
     this.name = name_product;
@@ -69,11 +63,6 @@ export class ListProductsComponent {
 
   public noneFilter():void{
     this.category = "";
-  }
-
-  public filter(event: Event):void {
-    const element = event.target as HTMLSelectElement;
-    this.category = element.value;
   }
 
 }

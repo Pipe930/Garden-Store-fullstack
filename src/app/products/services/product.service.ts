@@ -17,6 +17,9 @@ export class ProductService {
   public listCategories: Array<Category> = [];
   public activeFooter: boolean = false;
 
+  public listProductsOffer: Array<Product> = [];
+  public activateMessageOffer: boolean = true;
+
   constructor(
     private http: HttpClient
   ) { }
@@ -34,13 +37,21 @@ export class ProductService {
     })
   }
 
-  public filterProduct(id: string):Observable<ResponseProducts>{
-    return this.http.get<ResponseProducts>(`${this.url}category/${id}`)
+  public getCategories():void{
+    this.http.get<Array<Category>>('http://192.168.1.11:8000/api/v1/categories/').subscribe(result => {
+      this.listCategories = result;
+    }, error => {
+      console.log(error);
+    })
   }
 
-  public getCategories():void{
-    this.http.get<Array<Category>>('http://192.168.1.11:8000/api/v1/categories/').subscribe(resultado => {
-      this.listCategories = resultado;
+  public getProductsOffer():void{
+    this.http.get<any>(`${this.url}offer`).subscribe(result => {
+      if(result){
+        this.listProductsOffer = result.results;
+        this.activateMessageOffer = false;
+        console.log(this.listProductsOffer);
+      }
     }, error => {
       console.log(error);
     })
