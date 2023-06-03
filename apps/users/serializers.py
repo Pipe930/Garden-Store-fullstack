@@ -47,6 +47,7 @@ class MessageSerializer(serializers.Serializer):
 
 # Change Password Serializer
 class ChangePasswordSerializer(serializers.Serializer):
+
     model = User
 
     """

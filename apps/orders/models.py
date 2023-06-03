@@ -1,6 +1,5 @@
 from django.db import models
 from uuid import uuid4
-from apps.users.models import User
 from apps.cart.models import Voucher
 
 # Region Model
@@ -51,8 +50,8 @@ class Commune(models.Model):
 class Branch(models.Model):
 
     name_branch = models.CharField(max_length=100, unique=True)
-    direccion = models.CharField(max_length=255)
-    razon_social = models.CharField(max_length=100)
+    direction = models.CharField(max_length=255)
+    business_name = models.CharField(max_length=100)
     id_commune = models.ForeignKey(Commune, on_delete=models.CASCADE)
 
     class Meta:
@@ -83,7 +82,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     condition = models.CharField(max_length=20, choices=CHOICES_CONDITION, default="En Preparacion")
     withdrawal = models.CharField(max_length=20, choices=CHOICES_WITHDRAWAL)
-    direction = models.CharField(max_length=100)
+    direction = models.CharField(max_length=255, blank=True,null=True)
     num_department = models.PositiveSmallIntegerField(blank=True, null=True)
     id_commune = models.ForeignKey(Commune, on_delete=models.SET_NULL, blank=True, null=True)
     id_branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, blank=True, null=True)
@@ -96,4 +95,4 @@ class Order(models.Model):
         verbose_name_plural = 'orders'
 
     def __str__(self) -> str:
-        return self.id_user.username
+        return str(self.code)

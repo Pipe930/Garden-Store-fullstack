@@ -4,13 +4,17 @@ from .discount import discount
 
 # Serializer Offer Model
 class SerializerOffer(serializers.ModelSerializer):
+
     class Meta:
+
         model = Offer
         fields = ["id", "name_offer", "discount"]
 
 # Serializer Product Model
 class ProductSerializer(serializers.ModelSerializer):
+
     class Meta:
+
         model = Product
         fields = "__all__"
 
@@ -30,6 +34,8 @@ class ProductSerializer(serializers.ModelSerializer):
         return product.price
 
 class CategorySerializer(serializers.ModelSerializer):
+
     class Meta:
+
         model = Category
         fields = "__all__"

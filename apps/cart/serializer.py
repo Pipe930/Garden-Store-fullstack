@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Cart, CartItems, Voucher
+from apps.users.models import Subscription
 from apps.products.models import Product
 from django.http import Http404
 from apps.products.discount import discount
@@ -75,9 +76,14 @@ class CartItemsSerializer(serializers.ModelSerializer):
 
             price = discount(cartItem.product.price, cartItem.product.id_offer.discount)
 
-        price = cartItem.product.price
+        else:
+            price = cartItem.product.price
 
         result = cartItem.quantity * price
+
+        cartItem.price = result
+        cartItem.save()
+
         return result
 
 # Cart serializer
@@ -109,12 +115,37 @@ class CartSerializer(serializers.ModelSerializer):
 
         items = cart.items.all()
         total = calculate_total_price(items)
+
+        if get_subscription(cart.id_user):
+
+            discount_total = total * 0.05
+
+            price_total_discount = total - discount_total
+
+            cart.total = price_total_discount
+            cart.save()
+
+            return price_total_discount
+
+        cart.total = total
+        cart.save()
+
         return total
 
     def create(self, validated_data):
 
         cart = Cart.objects.create(**validated_data)
         return cart
+
+def get_subscription(id_user):
+
+    try:
+        Subscription.objects.get(id_user = id_user)
+    except Subscription.DoesNotExist:
+        return False
+
+    return True
+
 
 # Add Cart serializer
 class AddCartItemSerializer(serializers.ModelSerializer):
@@ -135,7 +166,7 @@ class AddCartItemSerializer(serializers.ModelSerializer):
         cart = obtain_cart_user(id_user)
 
         if cart is None:
-            raise Http404
+            raise serializers.ValidationError("Carrito no encontrado")
 
         id_cart = cart.id
 
@@ -195,7 +226,7 @@ class SubtractCartItemSerializer(serializers.ModelSerializer):
             cart = obtain_cart_user(id_user)
 
             if cart is None:
-                raise Http404
+                raise serializers.ValidationError("Carrito no encontrado")
 
             id_cart = cart.id
 
@@ -205,7 +236,7 @@ class SubtractCartItemSerializer(serializers.ModelSerializer):
         try:
             cartitem = CartItems.objects.get(product=product, id_cart=id_cart)
         except CartItems.DoesNotExist:
-            raise Http404
+            raise serializers.ValidationError("Items no encontrado")
 
         if cartitem.quantity == 1:
 

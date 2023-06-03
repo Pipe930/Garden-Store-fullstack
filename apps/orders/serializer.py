@@ -5,8 +5,22 @@ from uuid import uuid4
 class OrderSerializer(serializers.ModelSerializer):
 
     class Meta:
+
         model = Order
         fields = "__all__"
+
+    def validate(self, attrs):
+
+        if attrs.get('id_branch') is None and attrs.get('id_commune') is None:
+            raise serializers.ValidationError('Debe especificar al menos la sucursal o la comuna.')
+
+        if attrs.get('id_branch') is not None and attrs.get('id_commune') is not None:
+            raise serializers.ValidationError('Solo debe especificar uno, sucursal o la comuna.')
+
+        if attrs.get('id_commune') and attrs.get('direction'):
+            raise serializers.ValidationError('Si eligio envio a domicilio, tiene que indicar su direccion')
+
+        return attrs
 
     def create(self, validated_data):
 

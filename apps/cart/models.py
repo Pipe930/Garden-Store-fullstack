@@ -40,6 +40,7 @@ class Voucher(models.Model):
     total_price = models.PositiveIntegerField()
     state = models.BooleanField(default=True)
     products = models.JSONField()
+    quantity_products = models.PositiveIntegerField()
     id_user = models.ForeignKey(User, on_delete=models.CASCADE)
     id_cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
 

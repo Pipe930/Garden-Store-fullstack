@@ -6,7 +6,7 @@ from .models import Order, Region, Province, Commune, Branch
 @admin.register(Branch)
 class BranchAdmin(admin.ModelAdmin):
 
-    list_display = ["name_branch", "razon_social"]
+    list_display = ["name_branch", "business_name", "direction"]
     list_filter = ["name_branch"]
     ordering = ("name_branch",)
     list_per_page = 20
