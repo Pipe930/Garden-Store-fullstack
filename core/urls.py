@@ -7,6 +7,8 @@ from apps.users.urls import urlsUser
 from apps.products.urls import urlsCategory, urlsProduct
 from apps.cart.urls import urlsCart, urlsVoucher
 from apps.orders.urls import urlsOrders
+from apps.administration.urls import urlsAdministration
+from django.views.generic import RedirectView
 
 urlsApi =  [
     path("user/", include(urlsUser)),
@@ -18,8 +20,10 @@ urlsApi =  [
 ]
 
 urlpatterns = [
-  path('admin/', admin.site.urls),
-  path("api/v1/", include(urlsApi))
+    path('admin/', admin.site.urls),
+    path("administration/", include(urlsAdministration)),
+    path("api/v1/", include(urlsApi)),
+    path('', RedirectView.as_view(url='/administration/auth/login')),
 ]
 
 if settings.DEBUG:
