@@ -28,7 +28,9 @@ def calculate_total_price(items) -> int:
 
             price = price_product - price_discount
 
-        price = item.product.price
+        else:
+
+            price = item.product.price
 
         total_price += item.quantity * price
 

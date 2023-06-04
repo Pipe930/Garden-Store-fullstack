@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 from rest_framework.urlpatterns import format_suffix_patterns
 
@@ -7,7 +7,8 @@ urlsCart = [
     path("create", views.CreateCartView.as_view()),
     path("item/add", views.AddCartItemView.as_view()),
     path("item/substract", views.SubtractCartItemView.as_view()),
-    path("clear/<int:id>", views.ClearCartItemsView.as_view())
+    path("clear/<int:id>", views.ClearCartItemsView.as_view()),
+    path("delete/product/<int:id_cart>/<int:id_product>", views.DeleteProductCartView.as_view())
 ]
 
 urlsVoucher = [

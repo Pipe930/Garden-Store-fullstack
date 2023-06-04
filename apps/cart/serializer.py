@@ -125,12 +125,12 @@ class CartSerializer(serializers.ModelSerializer):
             cart.total = price_total_discount
             cart.save()
 
-            return price_total_discount
+            return int(price_total_discount)
 
         cart.total = total
         cart.save()
 
-        return total
+        return int(total)
 
     def create(self, validated_data):
 
@@ -207,6 +207,14 @@ class AddCartItemSerializer(serializers.ModelSerializer):
                 calculate_total_quality(cart.id)
 
         return self.instance
+
+# Delete Product Cart
+class DeleteProductCart(serializers.ModelSerializer):
+
+    class Meta:
+
+        model = CartItems
+        fields = ["id_cart", "product"]
 
 # Substract Cart serializer
 class SubtractCartItemSerializer(serializers.ModelSerializer):

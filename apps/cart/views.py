@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .models import Cart, CartItems, Voucher
 from rest_framework.authtoken.models import Token
 from apps.products.models import Product
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, VoucherSerializer, CancelVoucherSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
@@ -105,6 +105,36 @@ class AddCartItemView(generics.CreateAPIView):
 
         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
+class DeleteProductCartView(generics.DestroyAPIView):
+
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def get_object(self, id_cart:int, id_product:int):
+
+        try:
+            product = CartItems.objects.get(id_cart=id_cart, product=id_product)
+        except CartItems.DoesNotExist:
+            raise Http404
+
+        try:
+            cart = Cart.objects.get(id=id_cart)
+        except Cart.DoesNotExist:
+            raise Http404
+
+        return product, cart
+
+    def delete(self, request, id_cart:int, id_product:int):
+
+        product, cart = self.get_object(id_cart, id_product)
+
+        if not token_validated(request, cart.id_user.id):
+            return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
+
+        product.delete()
+
+        return Response({"message": "Producto Eliminado"}, status.HTTP_200_OK)
+
 class SubtractCartItemView(generics.CreateAPIView):
 
     serializer_class = SubtractCartItemSerializer
@@ -181,6 +211,16 @@ class CreateVoucherView(generics.CreateAPIView):
 
             if not token_validated(request, request.data["id_user"]):
                 return Response({"message": "Este token no le pertenece a este usuario"}, status.HTTP_401_UNAUTHORIZED)
+
+            products = request.data["products"]
+
+            if products == {}:
+                return Response({"message": "El json no puede estar vacio"}, status.HTTP_400_BAD_REQUEST)
+
+            try:
+                products["items"]
+            except KeyError:
+                return Response({"message": "El json no es valido"}, status.HTTP_400_BAD_REQUEST)
 
             serializer.save()
             return Response(

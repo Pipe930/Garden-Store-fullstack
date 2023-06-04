@@ -46,7 +46,7 @@ export class CartService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
-    })
+    });
   }
 
   public cartSubstract(product: any):void{
@@ -54,9 +54,7 @@ export class CartService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
-    }).subscribe(result => {
-      console.log(result);
-    })
+    });
   }
 
   public cartSum(product: AddCart):void{
@@ -66,7 +64,7 @@ export class CartService {
       })
     }).subscribe(result => {
       if(result){
-        console.log(result);
+        // console.log(result);
       }
     }, error => {
       console.log(error);
@@ -84,6 +82,6 @@ export class CartService {
       }
     }, error => {
       console.log(error);
-    })
+    });
   }
 }

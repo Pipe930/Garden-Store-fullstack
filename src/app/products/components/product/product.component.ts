@@ -59,6 +59,8 @@ export class ProductComponent implements OnInit {
 
     if(user){
 
+      console.log(this.product.id_offer);
+
       const product = {
         product: this.idProduct,
         quantity: this.quality,

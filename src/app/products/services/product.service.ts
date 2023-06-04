@@ -50,7 +50,6 @@ export class ProductService {
       if(result){
         this.listProductsOffer = result.results;
         this.activateMessageOffer = false;
-        console.log(this.listProductsOffer);
       }
     }, error => {
       console.log(error);

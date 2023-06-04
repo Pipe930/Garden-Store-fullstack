@@ -7,7 +7,7 @@ import { Cart } from '../modules/cart';
   templateUrl: './component-cart.component.html',
   styleUrls: ['./component-cart.component.scss']
 })
-export class ComponentCartComponent {
+export class ComponentCartComponent implements OnInit, OnDestroy {
   public items: Array<any> = [];
   public cart: Cart =  {
     id: 0,
@@ -36,10 +36,10 @@ export class ComponentCartComponent {
     this.service.getCart(
       this.user.user_id
       ).pipe(result => result).subscribe(result => {
-        this.items = result.items;
 
+        this.items = result.items;
         this.cart = result;
-        console.log(result);
+
       }, error => {
         console.log(error);
       });

@@ -19,4 +19,5 @@ export class ProductsOfferComponent implements OnInit {
   get servicio(){
     return this.service;
   }
+
 }
