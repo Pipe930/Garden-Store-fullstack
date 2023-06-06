@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './components/home/home.component';
+import { ContactComponent } from './components/contact/contact.component';
 import { SesionRequiredGuard } from './guards/sesion-required.guard';
 
 const routes: Routes = [
@@ -26,6 +27,10 @@ const routes: Routes = [
     path: "cart",
     loadChildren: () => import("./cart/cart.module").then(module => module.CartModule),
     canActivate: [SesionRequiredGuard]
+  },
+  {
+    path: "contact",
+    component: ContactComponent
   }
 ];
 

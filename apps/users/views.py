@@ -251,6 +251,7 @@ class SendEmailView(generics.CreateAPIView):
 
     serializer_class = MessageSerializer
     parser_classes = [JSONParser]
+    permission_classes = [AllowAny]
 
     # Petition POST
     def post(self, request, format=None):
@@ -274,6 +275,8 @@ class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     model = User
     parser_classes = [JSONParser]
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
 
     # Get the user object
     def get_object(self, queryset=None):

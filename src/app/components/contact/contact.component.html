@@ -1,0 +1,83 @@
+<div class="container-contact">
+  <div class="container-title">
+    <div class="container-text">
+      <div class="title">
+        <h2 id="title">Contactanos</h2>
+      </div>
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
+          <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="container-form-contact">
+    <div class="form-contact">
+      <div class="contact-header">
+        <h3 class="contact-title">Formulario Contacto</h3>
+        <p class="contact-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos unde reiciendis incidunt. Aliquam dicta expedita provident exercitationem molestiae tenetur cum, tempora, ipsa soluta asperiores porro, iusto alias! Harum, assumenda dolores!</p>
+      </div>
+      <div class="contact-body">
+        <form action="" id="form-contact" novalidate [formGroup]="formContact" (ngSubmit)="sendMessage()">
+          <div class="container-fields-form">
+            <div class="container-input">
+              <label for="id_first_name_contact">Nombre*</label>
+              <input type="text" id="id_first_name_contact" formControlName="nombre">
+              <div class="container-message-errors" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+                <span class="message-errors" *ngIf="nombre.errors.required">Este campo es requerido</span>
+                <span class="message-errors" *ngIf="nombre.errors.minlength">Tiene que ser minimo de 4 caracteres</span>
+                <span class="message-errors" *ngIf="nombre.errors.maxlength">Tiene que ser maximo de 20 caracteres</span>
+              </div>
+            </div>
+            <div class="container-input">
+              <label for="id_last_name_contact">Apellido*</label>
+              <input type="text" id="id_last_name_contact" formControlName="apellido">
+              <div class="container-message-errors" *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
+                <span class="message-errors" *ngIf="apellido.errors.required">Este campo es requerido</span>
+                <span class="message-errors" *ngIf="apellido.errors.minlength">Tiene que ser minimo de 4 caracteres</span>
+                <span class="message-errors" *ngIf="apellido.errors.maxlength">Tiene que ser maximo de 20 caracteres</span>
+              </div>
+            </div>
+            <div class="container-input">
+              <label for="id_rut_contact">Rut*</label>
+              <input type="text" id="id_rut_contact" formControlName="rut" placeholder="12345678-9">
+              <div class="container-message-errors" *ngIf="rut.invalid && (rut.dirty || rut.touched)">
+                <span class="message-errors" *ngIf="rut.errors.required">Este campo es requerido</span>
+                <span class="message-errors" *ngIf="rut.errors.minlength">Tiene que ser minimo de 9 caracteres</span>
+                <span class="message-errors" *ngIf="rut.errors.maxlength">Tiene que ser maximo de 10 caracteres</span>
+              </div>
+            </div>
+            <div class="container-input">
+              <label for="id_phone_contact">Telefono*</label>
+              <input type="text" id="id_phone_contact" formControlName="telefono">
+              <div class="container-message-errors" *ngIf="telefono.invalid && (telefono.dirty || telefono.touched)">
+                <span class="message-errors" *ngIf="telefono.errors.required">Este campo es requerido</span>
+                <span class="message-errors" *ngIf="telefono.errors.maxlength">Tiene que ser maximo de 12 caracteres</span>
+              </div>
+            </div>
+            <div class="container-input full">
+              <label for="id_email_contact">Email*</label>
+              <input type="email" id="id_email_contact" formControlName="correo" placeholder="example@gmail.com">
+              <div class="container-message-errors" *ngIf="correo.invalid && (correo.dirty || correo.touched)">
+                <span class="message-errors" *ngIf="correo.errors.required">Este campo es requerido</span>
+                <span class="message-errors" *ngIf="correo.errors.email">Tiene que ingresar un email valido</span>
+                <span class="message-errors" *ngIf="correo.errors.maxlength">Tiene que ser maximo de 255 caracteres</span>
+              </div>
+            </div>
+            <div class="container-input full">
+              <label for="id_message_contact">Mensaje*</label>
+              <textarea id="id_message_contact" cols="30" rows="10" formControlName="mensaje"></textarea>
+              <div class="container-message-errors" *ngIf="mensaje.invalid && (mensaje.dirty || mensaje.touched)">
+                <span class="message-errors" *ngIf="mensaje.errors.required">Este campo es requerido</span>
+                <span class="message-errors" *ngIf="mensaje.errors.maxlength">Tiene que ser maximo de 255 caracteres</span>
+              </div>
+            </div>
+          </div>
+          <div class="container-btn-send">
+            <button type="submit" class="btn-send">Enviar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
