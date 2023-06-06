@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from .models import Cart, CartItems, Voucher
 from rest_framework.authtoken.models import Token
 from apps.products.models import Product
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from .serializer import CartSerializer, AddCartItemSerializer, SubtractCartItemSerializer, VoucherSerializer, CancelVoucherSerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
