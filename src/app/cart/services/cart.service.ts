@@ -42,11 +42,7 @@ export class CartService {
   }
 
   public getCart(id: number):Observable<Cart>{
-    return this.http.get<Cart>(`${this.urlCart}user/${id}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
-      })
-    });
+    return this.http.get<Cart>(`${this.urlCart}user/${id}`);
   }
 
   public cartSubstract(product: any):void{
@@ -54,6 +50,8 @@ export class CartService {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
+    }).subscribe(result => {
+      console.log(result);
     });
   }
 
@@ -63,11 +61,7 @@ export class CartService {
         'Content-Type': 'application/json'
       })
     }).subscribe(result => {
-      if(result){
-        // console.log(result);
-      }
-    }, error => {
-      console.log(error);
+      console.log(result);
     });
   }
 
@@ -82,6 +76,12 @@ export class CartService {
       }
     }, error => {
       console.log(error);
+    });
+  }
+
+  public deleteProductCart(id_cart:number, id_product:number):void {
+    this.http.delete<any>(`${this.urlCart}delete/product/${id_cart}/${id_product}`).subscribe(result => {
+      console.log(result);
     });
   }
 }

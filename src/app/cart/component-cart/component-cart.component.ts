@@ -79,4 +79,11 @@ export class ComponentCartComponent implements OnInit, OnDestroy {
 
     window.location.reload();
   }
+
+  public deleteProduct(productID: number):void{
+
+    this.service.deleteProductCart(this.cart.id, productID);
+
+    window.location.reload();
+  }
 }
